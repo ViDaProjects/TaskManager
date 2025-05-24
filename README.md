@@ -1,4 +1,4 @@
-# CONFIGURE PROJECT
+# Configure project
 
 1- Clone repo with git clone
 
@@ -17,7 +17,7 @@ Run this command before run project if form.ui was updated
         
         pyside6-uic form.ui -o ui_form.py
 
-# RUN PROJECT
+# Run project
 
 On terminal, use 
 
