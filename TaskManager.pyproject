@@ -1,0 +1,9 @@
+{
+    "files": [
+        "mainwindow.py",
+        "form.ui",
+        ".gitignore",
+        "ui_form.py",
+        "README.md"
+    ]
+}
