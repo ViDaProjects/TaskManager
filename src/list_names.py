@@ -4,7 +4,6 @@ import time
 import threading
 from data_classes import ProcessData, SystemData, ProcRam
 from data_classes import GATHERED_DATA, PID
-
 import copy
 
 PROC_DIR = "/proc"
@@ -67,10 +66,10 @@ class DataMiner:
                 clean_private_size += self.get_numbers_list(smaps[i+9])[0]
                 in_swap += self.get_numbers_list(smaps[i+20])[0]
                 
-
+        t = time.time()
         with self.lock_gather_info:
             if found:
-                RAM_INFO = ProcRam(virtual_size, real_mem_share, real_mem_not_share, clean_shared_size, clean_private_size, in_swap)
+                RAM_INFO = ProcRam(virtual_size, real_mem_share, real_mem_not_share, clean_shared_size, clean_private_size, in_swap, t)
         print("ram data published")
 
     # Reading proc file outside of pid
@@ -105,7 +104,9 @@ class DataMiner:
             swap_total = self.get_numbers_list(ram_info[14])[0]
             swap_free = self.get_numbers_list(ram_info[15])[0]
 
-            sys_data = SystemData(cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, 0, 0, [])
+            t = time.time()
+
+            sys_data = SystemData(cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, 0, 0, [], t)
 
             proc_count = thread_count = 0
             for file in os.listdir(PROC_DIR):
@@ -172,13 +173,13 @@ class DataMiner:
 
 def gather_proc_data(lock_gather_info, lock_pid):
     var = DataMiner(lock_gather_info, lock_pid)
-    while True:
-        var.get_proc_data()
+    
+    var.get_proc_data()
 
 def gather_mem_data(lock_gather_info, lock_pid):
     var = DataMiner(lock_gather_info, lock_pid)
-    while True:
-        var.read_proc_mem()
+    
+    var.read_proc_mem()
 
 if __name__ == "__main__":
     lock_gather_info = threading.Lock()

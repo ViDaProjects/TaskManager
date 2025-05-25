@@ -32,6 +32,7 @@ class SystemData:
     proc_count: float
     thread_count_total: float
     process: list[ProcessData]
+    time: float
 
 @dataclass
 class ProcRam:
@@ -41,3 +42,4 @@ class ProcRam:
     clean_shared_size: float
     clean_private_size: float
     in_swap: float
+    time:float

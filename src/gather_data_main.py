@@ -2,10 +2,8 @@ import threading
 
 import list_names
 
-
-
 def run_gatherer(lock_gather_info, lock_pid):
-    
+    print("me")
     proc_thread = threading.Thread(target=list_names.gather_proc_data, args=(lock_gather_info, lock_pid))
     proc_thread.start()
 
