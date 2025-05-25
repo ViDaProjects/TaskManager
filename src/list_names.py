@@ -3,6 +3,7 @@ import re
 import time
 import threading
 from data_classes import ProcessData, SystemData, ProcRam
+from data_classes import GATHERED_DATA, PID
 
 import copy
 
@@ -12,14 +13,7 @@ SCHED_FILE = "sched"
 STAT_FILE = "stat"
 SMAPS_FILE = "smaps"
 
-global GATHERED_DATA
-GATHERED_DATA = None
 
-global RAM_INFO
-RAM_INFO = None
-
-global PID
-PID = 0
 
 class DataMiner:
 
@@ -50,11 +44,13 @@ class DataMiner:
         return data
 
     def read_proc_mem(self):
-        
-        smaps = self.read_proc_file(str(PID), SMAPS_FILE)
+        print("Ram data not gathered, process killed or permission denied")
+        with self.lock_pid:
+            smaps = self.read_proc_file(str(PID), SMAPS_FILE)
+            
 
         if not smaps:
-            with self.lock_pid:
+            with self.lock_gather_info:
                 RAM_INFO = None
             print("Ram data not gathered, process killed or permission denied")
             return
@@ -72,7 +68,7 @@ class DataMiner:
                 in_swap += self.get_numbers_list(smaps[i+20])[0]
                 
 
-        with self.lock_pid:
+        with self.lock_gather_info:
             if found:
                 RAM_INFO = ProcRam(virtual_size, real_mem_share, real_mem_not_share, clean_shared_size, clean_private_size, in_swap)
         print("ram data published")

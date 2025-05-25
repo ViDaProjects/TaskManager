@@ -1,6 +1,17 @@
 
 from dataclasses import dataclass
 
+'''Both gathered_data and ram_info use the same lock because simplicity'''
+global GATHERED_DATA
+GATHERED_DATA = None
+
+global RAM_INFO
+RAM_INFO = None
+
+global PID
+PID = 0
+
+
 @dataclass
 class ProcessData:
     name: str
