@@ -15,7 +15,7 @@
 ## Generate another ui file
 Run this command before run project if form.ui was updated
         
-        pyside6-uic form.ui -o ui_form.py
+        pyside6-uic gui/form.ui -o gui/ui_form.py
 
 # Run project
 
