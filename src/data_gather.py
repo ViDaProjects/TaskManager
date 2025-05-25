@@ -121,8 +121,8 @@ class DataMiner:
                         thread_count += len(threads)
                         thread_count_proc = len(threads)
                     except (FileNotFoundError, PermissionError):
+                        thread_count_proc = 0
                         continue
-
                     name = self.read_proc_file(file, "comm")# This dir has only proc name
                     
                     if not name:
@@ -137,10 +137,7 @@ class DataMiner:
                     
                     # Static priority data
                     prio = self.get_numbers_list(sched[23])[0] # Retorna lista de int
-                    prio_type = "rt"
-                    if prio >= 100:
-                        prio -= 120
-                        prio_type = "nice"
+                    
                     #print("PRIO: " + prio_type + "\t" + str(prio))
 
                     # Task cpu runtime data
@@ -157,9 +154,8 @@ class DataMiner:
 
                     user_cpu_time = int(stat[13])
                     system_cpu_time = int(stat[14]) # syscalls and admin runningg
-                    proc_cpu_time = user_cpu_time + system_cpu_time
 
-                    proc_data = ProcessData(name, thread_count_proc, prio, cpu_runtime, cpu_active_time)
+                    proc_data = ProcessData(name, thread_count_proc, prio, user_cpu_time, system_cpu_time)
 
                     sys_data.process.append(proc_data)
             

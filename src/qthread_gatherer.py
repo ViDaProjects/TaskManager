@@ -1,5 +1,5 @@
 from PySide6.QtCore import QThread
-import list_names
+import data_gather
 import time
 
 class ProcDataThread(QThread):
@@ -11,8 +11,7 @@ class ProcDataThread(QThread):
 
     def run(self):
         while self._running:
-            list_names.gather_proc_data(self.lock_gather_info, self.lock_pid)
-            break  # Remove this if gather_proc_data runs continuously
+            data_gather.gather_proc_data(self.lock_gather_info, self.lock_pid)
 
     def stop(self):
         self._running = False
@@ -26,9 +25,9 @@ class MemDataThread(QThread):
         self._running = True
 
     def run(self):
+        
         while self._running:
-            list_names.gather_mem_data(self.lock_gather_info, self.lock_pid)
-            break  # Remove this if gather_mem_data runs continuously
+            data_gather.gather_mem_data(self.lock_gather_info, self.lock_pid)
 
     def stop(self):
         self._running = False
@@ -46,7 +45,7 @@ if __name__ == "__main__":
     proc_thread.start()
     ram_thread.start()
 
-    time.sleep(2)
+    time.sleep(5)
 
     proc_thread.stop()
     ram_thread.stop()
