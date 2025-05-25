@@ -252,17 +252,17 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_11.addWidget(self.frame_15)
 
-        self.frame_14 = QFrame(self.memory_use_page)
-        self.frame_14.setObjectName(u"frame_14")
-        sizePolicy.setHeightForWidth(self.frame_14.sizePolicy().hasHeightForWidth())
-        self.frame_14.setSizePolicy(sizePolicy)
-        self.frame_14.setFrameShape(QFrame.Shape.StyledPanel)
-        self.frame_14.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_10 = QVBoxLayout(self.frame_14)
+        self.mem_graph_frame = QFrame(self.memory_use_page)
+        self.mem_graph_frame.setObjectName(u"mem_graph_frame")
+        sizePolicy.setHeightForWidth(self.mem_graph_frame.sizePolicy().hasHeightForWidth())
+        self.mem_graph_frame.setSizePolicy(sizePolicy)
+        self.mem_graph_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.mem_graph_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_10 = QVBoxLayout(self.mem_graph_frame)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
-        self.verticalLayout_10.setContentsMargins(0, -1, 0, 0)
+        self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
 
-        self.verticalLayout_11.addWidget(self.frame_14)
+        self.verticalLayout_11.addWidget(self.mem_graph_frame)
 
         self.stacked_pages.addWidget(self.memory_use_page)
         self.cpu_use_page = QWidget()
@@ -284,17 +284,17 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.frame_13)
 
-        self.frame_12 = QFrame(self.cpu_use_page)
-        self.frame_12.setObjectName(u"frame_12")
-        sizePolicy.setHeightForWidth(self.frame_12.sizePolicy().hasHeightForWidth())
-        self.frame_12.setSizePolicy(sizePolicy)
-        self.frame_12.setFrameShape(QFrame.Shape.StyledPanel)
-        self.frame_12.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_7 = QVBoxLayout(self.frame_12)
+        self.cpu_graph_frame = QFrame(self.cpu_use_page)
+        self.cpu_graph_frame.setObjectName(u"cpu_graph_frame")
+        sizePolicy.setHeightForWidth(self.cpu_graph_frame.sizePolicy().hasHeightForWidth())
+        self.cpu_graph_frame.setSizePolicy(sizePolicy)
+        self.cpu_graph_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.cpu_graph_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_7 = QVBoxLayout(self.cpu_graph_frame)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.verticalLayout_7.setContentsMargins(0, -1, 0, 0)
+        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
 
-        self.verticalLayout_8.addWidget(self.frame_12)
+        self.verticalLayout_8.addWidget(self.cpu_graph_frame)
 
         self.stacked_pages.addWidget(self.cpu_use_page)
 

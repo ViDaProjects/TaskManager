@@ -10,6 +10,7 @@
         "src/thread_test.py",
         "gui/form.ui",
         "gui/mainwindow.py",
-        "gui/ui_form.py"
+        "gui/ui_form.py",
+        "gui/graph_page.py"
     ]
 }
