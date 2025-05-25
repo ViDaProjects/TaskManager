@@ -2,7 +2,7 @@ import os
 import re
 import time
 import threading
-from dataclasses import dataclass
+from data_classes import ProcessData, SystemData, ProcRam
 
 import copy
 
@@ -15,30 +15,11 @@ SMAPS_FILE = "smaps"
 global GATHERED_DATA
 GATHERED_DATA = None
 
+global RAM_INFO
+RAM_INFO = None
+
 global PID
 PID = 0
-
-@dataclass
-class ProcessData:
-    name: str
-    thread_count_proc: float
-    prio: float
-    cpu_runtime: float
-    cpu_active_time: float
-
-@dataclass
-class SystemData:
-    cpu_runtime: float
-    cpu_active_time: float 
-    mem_total: float
-    mem_unused: float
-    mem_available: float
-    swap_total: float
-    swap_free: float
-    proc_count: float
-    thread_count_total: float
-    process: list[ProcessData]
-
 
 class DataMiner:
 
@@ -68,13 +49,17 @@ class DataMiner:
             return
         return data
 
-    def read_proc_mem(self, pid):
-        smaps = self.read_proc_file(pid, SMAPS_FILE)
+    def read_proc_mem(self):
+        
+        smaps = self.read_proc_file(str(PID), SMAPS_FILE)
 
         if not smaps:
+            with self.lock_pid:
+                RAM_INFO = None
+            print("Ram data not gathered, process killed or permission denied")
             return
 
-        virtual_size = real_mem_share = real_mem_not_share = clean_shared_percent = clean_private_percent = in_swap = 0
+        virtual_size = real_mem_share = real_mem_not_share = clean_shared_size = clean_private_size = in_swap = 0
         for i in range(len(smaps)):
             
             found = re.search(r'([0-9a-f]{12}-[0-9a-f]{12})', smaps[i])
@@ -82,9 +67,15 @@ class DataMiner:
                 virtual_size += self.get_numbers_list(smaps[i+1])[0]
                 real_mem_share += self.get_numbers_list(smaps[i+4])[0]
                 real_mem_not_share += self.get_numbers_list(smaps[i+5])[0]
-                clean_shared_percent += self.get_numbers_list(smaps[i+7])[0] / real_mem_share if real_mem_share else 0
-                clean_private_percent += self.get_numbers_list(smaps[i+9])[0] / real_mem_not_share if real_mem_not_share else 0
+                clean_shared_size += self.get_numbers_list(smaps[i+7])[0]
+                clean_private_size += self.get_numbers_list(smaps[i+9])[0]
                 in_swap += self.get_numbers_list(smaps[i+20])[0]
+                
+
+        with self.lock_pid:
+            if found:
+                RAM_INFO = ProcRam(virtual_size, real_mem_share, real_mem_not_share, clean_shared_size, clean_private_size, in_swap)
+        print("ram data published")
 
     # Reading proc file outside of pid
     def read_proc_data(self, file):
@@ -179,16 +170,22 @@ class DataMiner:
             sys_data.thread_count_total = thread_count
             with self.lock_gather_info:
                 GATHERED_DATA = copy.deepcopy(sys_data)
-            print("Done")
+            print("proc data published")
 
             return 0
 
-def main(lock_gather_info, lock_pid):
+def gather_proc_data(lock_gather_info, lock_pid):
+    var = DataMiner(lock_gather_info, lock_pid)
     while True:
-        var = DataMiner(lock_gather_info, lock_pid)
         var.get_proc_data()
+
+def gather_mem_data(lock_gather_info, lock_pid):
+    var = DataMiner(lock_gather_info, lock_pid)
+    while True:
+        var.read_proc_mem()
 
 if __name__ == "__main__":
     lock_gather_info = threading.Lock()
     lock_pid = threading.Lock()
-    main(lock_gather_info, lock_pid)
+    #gather_proc_data(lock_gather_info, lock_pid)
+    gather_mem_data(lock_gather_info, lock_pid)
