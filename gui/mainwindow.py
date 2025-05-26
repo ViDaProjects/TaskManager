@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         if 0 <= row < len(self.show_process_list):
             process = self.show_process_list[row]
             with lock_PID:
-                src.data_classes.PID = process[1] #Get current PID value
+                src.data_classes.set_PID(process[1]) #Get current PID value
 
             time.sleep(0.5) #Time to wait data
             self.dialog = ProcessDialog(self.all_system_data, self.proc_ram_data, self)
@@ -123,8 +123,8 @@ class MainWindow(QMainWindow):
 
     def update_stack_pages(self):
         with lock_gather_info:
-            self.all_system_data = copy.deepcopy(src.data_classes.SHOW_PROC_DATA)
-            self.proc_ram_data = copy.deepcopy(src.data_classes.SHOW_PROC_DATA)
+            self.all_system_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
+            self.proc_ram_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
             #COPY PROC_RAM_DATA -----------------------
 
         if not isinstance(self.all_system_data, ShowSystemData):
