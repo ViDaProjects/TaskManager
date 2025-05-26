@@ -12,6 +12,9 @@ class DataProcesser:
 
         with self.lock_gather_info:
             for_percent = copy.deepcopy(data_classes.GATHERED_DATA)
+        
+        if for_percent is None:
+            return
 
         time.sleep(1)
 
@@ -82,6 +85,9 @@ class DataProcesser:
     def ram_processor(self):
         with self.lock_gather_info:
             ram_data = copy.deepcopy(data_classes.RAM_INFO)
+        
+        if ram_data is None:
+            return
 
         ram_data = data_classes.ProcRam()
 

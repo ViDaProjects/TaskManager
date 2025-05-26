@@ -9,7 +9,7 @@ global RAM_INFO
 RAM_INFO = None
 
 global PID
-PID = 0
+PID = 1607
 
 
 @dataclass
@@ -37,12 +37,13 @@ class SystemData:
 
 @dataclass
 class ProcRam:
-    virtual_size: float
-    real_mem_share: float
-    real_mem_not_share: float
-    clean_shared_size: float
-    clean_private_size: float
-    in_swap: float
+    virtual_pages: float
+    real_pages_share: float
+    shared_pages: float
+    text_pages: float
+    data_stack_pages: float
+    dirty_pages: float
+    in_swap_kb: float
     time:float
 
 @dataclass
