@@ -61,7 +61,6 @@ class DataProcesser:
         proc_processed_list = []
 
         for i in proc_data.process:
-            print(i)
             if i.name not in names:
                 continue
 
@@ -85,7 +84,7 @@ class DataProcesser:
             proc_cpu_usage = 100 * (proc_cpu_time - old_cpu_time) / cpu_usage
 
             data = data_classes.ShowProcessData(name, pid, thread_count_proc, prio, prio_type, cpu_usage)
-            
+
             pub_info.process.append(data)
         
         with self.lock_pub_info:
@@ -98,7 +97,7 @@ class DataProcesser:
             return
 
         with self.lock_gather_info:
-            ram_data = copy.deepcopy(data_classes.RAM_INFO)
+            ram_data = copy.deepcopy(data_classes.get_RAM_INFO())
         
         if ram_data is None:
             return
@@ -132,9 +131,7 @@ class DataProcesser:
         pub = data_classes.ShowRamData(virtual_size_kb, data_stack_size_kb, real_size_share_kb, real_size_not_share_kb, dirty_percentage, swap_percentage)
 
         with self.lock_pub_info:
-            SHOW_PROC_DATA = copy.deepcopy(pub)
-
-        running = False
+            data_classes.set_SHOW_RAM_DATA(copy.deepcopy(pub))
 
     def set_locks(self, lock_gather_info, lock_final_data, lock_pub_info):
         self.lock_gather_info = lock_gather_info
@@ -143,9 +140,13 @@ class DataProcesser:
 
 var = DataProcesser()
 
-running = False
 def run_proc_processor(lock_gather_info, lock_final_data, lock_pub_info):
 
     var.set_locks(lock_gather_info, lock_final_data, lock_pub_info)
     
     var.proc_processor()
+
+def run_mem_processor(lock_gather_info, lock_final_data, lock_pub_info):
+    var.set_locks(lock_gather_info, lock_final_data, lock_pub_info)
+
+    var.ram_processor()

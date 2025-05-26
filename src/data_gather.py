@@ -38,9 +38,9 @@ class DataMiner:
         try:
             with open(path, 'r') as f:
                 data = f.readlines()
-                
+
         except IOError:
-            # Skip if the file can't be read (e.g., process has exited)
+            
             return
         return data
 
@@ -48,9 +48,9 @@ class DataMiner:
         t = time.time()
 
         with self.lock_pid:
-            pid = PID
+            pid = data_classes.get_PID()
 
-        statm = self.read_proc_file(str(pid), STATM_FILE)
+        statm = self.read_proc_file(pid, STATM_FILE)
 
         if not statm:
             with self.lock_gather_info:
@@ -76,7 +76,7 @@ class DataMiner:
 
         if not smaps:
             with self.lock_gather_info:
-                RAM_INFO = ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, -1, t)
+                data_classes.set_RAM_INFO(ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, -1, t))
             print("Ram data incomplete, permission denied")
             return
 
@@ -88,7 +88,9 @@ class DataMiner:
                 in_swap_kb += self.get_numbers_list(smaps[i+20])[0]
 
         with self.lock_gather_info:
-            RAM_INFO = ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, in_swap_kb, t)
+            data_classes.set_RAM_INFO(ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, in_swap_kb, t))
+        print("Ram data published")
+
 
 
     # Reading proc file outside of pid
@@ -190,16 +192,16 @@ class DataMiner:
 
 var = DataMiner()
 
-lock = threading.Lock()
 
 def gather_proc_data(lock_gather_info, lock_pid):
 
-            var.set_locks(lock_gather_info, lock_pid)
-            var.get_proc_data()
+    var.set_locks(lock_gather_info, lock_pid) # Lock_pid is not used for systemwide gather info, here cause removing is a hassle
+    var.get_proc_data()
 
 def gather_mem_data(lock_gather_info, lock_pid):
-    var = DataMiner(lock_gather_info, lock_pid)
-    
+
+    var.set_locks(lock_gather_info, lock_pid)
+
     var.read_proc_mem()
 
 if __name__ == "__main__":
