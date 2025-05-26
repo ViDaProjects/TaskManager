@@ -1,12 +1,16 @@
 import src.data_classes as data_classes
 import copy
 import time
+import os
+
+from data_classes import SHOW_PROC_DATA
 
 class DataProcesser:
 
-    def __init__(self, lock_gather_info, lock_final_data):
+    def __init__(self, lock_gather_info, lock_final_data, lock_pub_info):
         self.lock_gather_info = lock_gather_info
         self.lock_final_data = lock_final_data
+        self.lock_pub_info = lock_pub_info
 
     def proc_processor(self):
 
@@ -80,7 +84,8 @@ class DataProcesser:
 
             proc_data.process.append(proc)
 
-        # Lock com deepcopy dentro
+        with self.lock_pub_info:
+            SHOW_PROC_DATA = proc_data
 
     def ram_processor(self):
         with self.lock_gather_info:
