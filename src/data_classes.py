@@ -11,6 +11,9 @@ RAM_INFO = None
 global PID
 PID = 1607
 
+global SHOW_PROC_DATA
+SHOW_PROC_DATA = None
+
 
 @dataclass
 class ProcessData:

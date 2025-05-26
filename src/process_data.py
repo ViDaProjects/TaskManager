@@ -1,12 +1,16 @@
 import data_classes
 import copy
 import time
+import os
+
+from data_classes import SHOW_PROC_DATA
 
 class DataProcesser:
 
-    def __init__(self, lock_gather_info, lock_final_data):
+    def __init__(self, lock_gather_info, lock_final_data, lock_pub_info):
         self.lock_gather_info = lock_gather_info
         self.lock_final_data = lock_final_data
+        self.lock_pub_info = lock_pub_info
 
     def proc_processor(self):
 
@@ -80,7 +84,8 @@ class DataProcesser:
 
             proc_data.process.append(proc)
 
-        # Lock com deepcopy dentro
+        with self.lock_pub_info:
+            SHOW_PROC_DATA = proc_data
 
     def ram_processor(self):
         with self.lock_gather_info:
@@ -91,8 +96,6 @@ class DataProcesser:
 
         ram_data = data_classes.ProcRam()
 
-        virtual_size = ram_data.virtual_size
-        used = ram_data.real_mem_share
-        shared_from_others = ram_data.real_mem_share - ram_data.real_mem_not_share
-        clean_percent = 100 * (used - ram_data.clean_shared_size) / used
-        in_swap_percent = 100 * ram_data.in_swap / used
+        page_size = os.sysconf(os._SC_PAGESIZE)
+
+        text_size_kb = ram_data.text_pages * page_size
