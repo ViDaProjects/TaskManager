@@ -4,7 +4,6 @@ import time
 import threading
 from data_classes import ProcessData, SystemData, ProcRam
 from data_classes import GATHERED_DATA, PID
-
 import copy
 
 PROC_DIR = "/proc"
@@ -67,10 +66,10 @@ class DataMiner:
                 clean_private_size += self.get_numbers_list(smaps[i+9])[0]
                 in_swap += self.get_numbers_list(smaps[i+20])[0]
                 
-
+        t = time.time()
         with self.lock_gather_info:
             if found:
-                RAM_INFO = ProcRam(virtual_size, real_mem_share, real_mem_not_share, clean_shared_size, clean_private_size, in_swap)
+                RAM_INFO = ProcRam(virtual_size, real_mem_share, real_mem_not_share, clean_shared_size, clean_private_size, in_swap, t)
         print("ram data published")
 
     # Reading proc file outside of pid
@@ -105,7 +104,9 @@ class DataMiner:
             swap_total = self.get_numbers_list(ram_info[14])[0]
             swap_free = self.get_numbers_list(ram_info[15])[0]
 
-            sys_data = SystemData(cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, 0, 0, [])
+            t = time.time()
+
+            sys_data = SystemData(cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, 0, 0, [], t)
 
             proc_count = thread_count = 0
             for file in os.listdir(PROC_DIR):
@@ -120,8 +121,8 @@ class DataMiner:
                         thread_count += len(threads)
                         thread_count_proc = len(threads)
                     except (FileNotFoundError, PermissionError):
+                        thread_count_proc = 0
                         continue
-
                     name = self.read_proc_file(file, "comm")# This dir has only proc name
                     
                     if not name:
@@ -136,10 +137,7 @@ class DataMiner:
                     
                     # Static priority data
                     prio = self.get_numbers_list(sched[23])[0] # Retorna lista de int
-                    prio_type = "rt"
-                    if prio >= 100:
-                        prio -= 120
-                        prio_type = "nice"
+                    
                     #print("PRIO: " + prio_type + "\t" + str(prio))
 
                     # Task cpu runtime data
@@ -156,9 +154,8 @@ class DataMiner:
 
                     user_cpu_time = int(stat[13])
                     system_cpu_time = int(stat[14]) # syscalls and admin runningg
-                    proc_cpu_time = user_cpu_time + system_cpu_time
 
-                    proc_data = ProcessData(name, thread_count_proc, prio, cpu_runtime, cpu_active_time)
+                    proc_data = ProcessData(name, file, thread_count_proc, prio, user_cpu_time, system_cpu_time)
 
                     sys_data.process.append(proc_data)
             
@@ -172,13 +169,13 @@ class DataMiner:
 
 def gather_proc_data(lock_gather_info, lock_pid):
     var = DataMiner(lock_gather_info, lock_pid)
-    while True:
-        var.get_proc_data()
+    
+    var.get_proc_data()
 
 def gather_mem_data(lock_gather_info, lock_pid):
     var = DataMiner(lock_gather_info, lock_pid)
-    while True:
-        var.read_proc_mem()
+    
+    var.read_proc_mem()
 
 if __name__ == "__main__":
     lock_gather_info = threading.Lock()
