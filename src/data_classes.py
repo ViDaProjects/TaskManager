@@ -8,9 +8,11 @@ class DataBuffers:
 
         self.RAM_INFO = None
 
-        self.PID = 0
+        self.PID = str("20403")
 
         self.SHOW_SYSTEM_DATA = None
+
+        self.SHOW_RAM_DATA = None
 
     def GATHERED_set(self, data):
         self.GATHERED_DATA = data
@@ -35,6 +37,12 @@ class DataBuffers:
     
     def SHOW_SYSTEM_DATA_get(self):
         return self.SHOW_SYSTEM_DATA
+    
+    def SHOW_RAM_DATA_set(self, data):
+        self.SHOW_RAM_DATA = data
+
+    def SHOW_RAM_DATA_get(self):
+        return self.SHOW_RAM_DATA
 
 
 def set_GATHERED_DATA(data):
@@ -56,10 +64,16 @@ def get_PID():
     return buffer.PID_get()
 
 def set_SHOW_SYSTEM_DATA(data):
-    buffer.PID_set(data)
+    buffer.SHOW_SYSTEM_DATA_set(data)
 
 def get_SHOW_SYSTEM_DATA():
-    return buffer.PID_get()
+    return buffer.SHOW_SYSTEM_DATA_get()
+
+def set_SHOW_RAM_DATA(data):
+    buffer.SHOW_RAM_DATA_set(data)
+
+def get_SHOW_RAM_DATA():
+    return buffer.SHOW_RAM_DATA_get()
 
 @dataclass
 class ProcessData:
