@@ -11,6 +11,7 @@ COMM_FILE = "comm"
 SCHED_FILE = "sched"
 STAT_FILE = "stat"
 SMAPS_FILE = "smaps"
+STATM_FILE = "statm"
 
 
 
@@ -43,33 +44,51 @@ class DataMiner:
         return data
 
     def read_proc_mem(self):
-        print("Ram data not gathered, process killed or permission denied")
-        with self.lock_pid:
-            smaps = self.read_proc_file(str(PID), SMAPS_FILE)
-            
+        t = time.time()
 
-        if not smaps:
+        with self.lock_pid:
+            pid = PID
+
+        statm = self.read_proc_file(str(pid), STATM_FILE)
+
+        if not statm:
             with self.lock_gather_info:
                 RAM_INFO = None
             print("Ram data not gathered, process killed or permission denied")
             return
+        
+        ram_granular_data = self.get_numbers_list(statm[0])
 
-        virtual_size = real_mem_share = real_mem_not_share = clean_shared_size = clean_private_size = in_swap = 0
+        virtual_pages = ram_granular_data[0]
+
+        real_pages_share = ram_granular_data[1]
+
+        shared_pages = ram_granular_data[2]
+
+        text_pages = ram_granular_data[3]
+
+        data_stack_pages = ram_granular_data[5]
+
+        dirty_pages = ram_granular_data[6]
+
+        smaps = self.read_proc_file(str(pid), SMAPS_FILE)            
+
+        if not smaps:
+            with self.lock_gather_info:
+                RAM_INFO = ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, -1, t)
+            print("Ram data incomplete, permission denied")
+            return
+
+        in_swap_kb = 0
         for i in range(len(smaps)):
             
             found = re.search(r'([0-9a-f]{12}-[0-9a-f]{12})', smaps[i])
             if found:
-                virtual_size += self.get_numbers_list(smaps[i+1])[0]
-                real_mem_share += self.get_numbers_list(smaps[i+4])[0]
-                real_mem_not_share += self.get_numbers_list(smaps[i+5])[0]
-                clean_shared_size += self.get_numbers_list(smaps[i+7])[0]
-                clean_private_size += self.get_numbers_list(smaps[i+9])[0]
-                in_swap += self.get_numbers_list(smaps[i+20])[0]
-                
-        t = time.time()
+                in_swap_kb += self.get_numbers_list(smaps[i+20])[0]
+
         with self.lock_gather_info:
-            if found:
-                RAM_INFO = ProcRam(virtual_size, real_mem_share, real_mem_not_share, clean_shared_size, clean_private_size, in_swap, t)
+            RAM_INFO = ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, in_swap_kb, t)
+
         print("ram data published")
 
     # Reading proc file outside of pid
@@ -99,7 +118,7 @@ class DataMiner:
             mem_total = self.get_numbers_list(ram_info[0])[0]
             mem_unused = self.get_numbers_list(ram_info[1])[0]
             mem_available = self.get_numbers_list(ram_info[2])[0]
-            
+
 
             swap_total = self.get_numbers_list(ram_info[14])[0]
             swap_free = self.get_numbers_list(ram_info[15])[0]
