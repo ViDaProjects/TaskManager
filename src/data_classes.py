@@ -1,19 +1,65 @@
 
 from dataclasses import dataclass
 
-'''Both gathered_data and ram_info use the same lock because simplicity'''
-global GATHERED_DATA
-GATHERED_DATA = None
+class DataBuffers:
 
-global RAM_INFO
-RAM_INFO = None
+    def __init__(self):
+        self.GATHERED_DATA = None
 
-global PID
-PID = 1607
+        self.RAM_INFO = None
 
-global SHOW_PROC_DATA
-SHOW_PROC_DATA = None
+        self.PID = 0
 
+        self.SHOW_SYSTEM_DATA = None
+
+    def GATHERED_set(self, data):
+        self.GATHERED_DATA = data
+    
+    def GATHERED_get(self):
+        return self.GATHERED_DATA
+    
+    def RAM_INFO_set(self, data):
+        self.RAM_INFO = data
+    
+    def RAM_INFO_get(self):
+        return self.RAM_INFO
+
+    def PID_set(self, data):
+        self.PID = data
+    
+    def PID_get(self):
+        return self.PID
+    
+    def SHOW_SYSTEM_DATA_set(self, data):
+        self.SHOW_SYSTEM_DATA = data
+    
+    def SHOW_SYSTEM_DATA_get(self):
+        return self.SHOW_SYSTEM_DATA
+
+
+def set_GATHERED_DATA(data):
+    buffer.GATHERED_set(data)
+
+def get_GATHERED_DATA():
+    return buffer.GATHERED_get()
+
+def set_RAM_INFO(data):
+    buffer.RAM_INFO_set(data)
+
+def get_RAM_INFO():
+    return buffer.RAM_INFO_get()
+
+def set_PID(data):
+    buffer.PID_set(data)
+
+def get_PID():
+    return buffer.PID_get()
+
+def set_SHOW_SYSTEM_DATA(data):
+    buffer.PID_set(data)
+
+def get_SHOW_SYSTEM_DATA():
+    return buffer.PID_get()
 
 @dataclass
 class ProcessData:
@@ -73,9 +119,11 @@ class ShowSystemData:
 
 @dataclass
 class ShowRamData:
-    virtal_size: float
-    real_mem_share: float
-    real_mem_not_share: float
-    clean_shared_size: float
-    clean_private_size: float
-    in_swap: float
+    virtual_size_kb: float
+    data_stack_size_kb: float
+    real_size_share_kb: float
+    real_size_not_share_kb: float
+    dirty_percentage: float
+    swap_percentage: float
+
+buffer = DataBuffers()
