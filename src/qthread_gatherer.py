@@ -1,6 +1,6 @@
 from PySide6.QtCore import QThread
-import data_gather as data_gather
-import process_data as process_data
+import src.data_gather as data_gather
+import src.process_data as process_data
 import time
 from threading import Lock
 

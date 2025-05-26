@@ -1,4 +1,4 @@
-import data_classes as data_classes
+import src.data_classes as data_classes
 import copy
 import time
 import os
@@ -98,7 +98,6 @@ class DataProcesser:
 
         with self.lock_gather_info:
             ram_data = copy.deepcopy(data_classes.get_RAM_INFO())
-
         if ram_data is None:
             return
 
