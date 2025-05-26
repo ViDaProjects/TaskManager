@@ -2,9 +2,9 @@ import os
 import re
 import time
 import threading
-from src.data_classes import ProcessData, SystemData, ProcRam
+from data_classes import ProcessData, SystemData, ProcRam
 #from data_classes import GATHERED_DATA, PID
-import src.data_classes as data_classes
+import data_classes as data_classes
 import copy
 
 PROC_DIR = "/proc"
@@ -55,7 +55,7 @@ class DataMiner:
 
         if not statm:
             with self.lock_gather_info:
-                RAM_INFO = None
+                data_classes.set_RAM_INFO(None)
             print("Ram data not gathered, process killed or permission denied")
             return
         
