@@ -14,7 +14,7 @@ from threading import Lock
 from gui.ui_form import Ui_MainWindow
 from src.data_classes import ShowProcessData, ShowSystemData
 from gui.graph_page import GraphPage
-from src.qthread_gatherer import ProcDataThread, MemDataThread
+from src.qthread_gatherer import ProcDataThread, MemDataThread, ShowMemDataThread, ShowProcDataThread
 from gui.ProcessDialog import ProcessDialog
 import src.data_classes
 
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         if 0 <= row < len(self.show_process_list):
             process = self.show_process_list[row]
             with lock_PID:
-                src.data_classes.set_PID(process[1]) #Get current PID value
+                src.data_classes.set_PID(process.pid) #Get current PID value
 
             time.sleep(0.5) #Time to wait data
             self.dialog = ProcessDialog(self.all_system_data, self.proc_ram_data, self)
@@ -122,13 +122,13 @@ class MainWindow(QMainWindow):
         table.resizeRowsToContents()
 
     def update_stack_pages(self):
-        with lock_gather_info:
+        with lock_pub_info:
             self.all_system_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
-            self.proc_ram_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
-            #COPY PROC_RAM_DATA -----------------------
+            self.proc_ram_data = copy.deepcopy(src.data_classes.get_SHOW_RAM_DATA())
 
         if not isinstance(self.all_system_data, ShowSystemData):
             print("System data is not valid")
+            print(self.all_system_data)
             return
 
         #Update labels
@@ -149,26 +149,39 @@ class MainWindow(QMainWindow):
             self.dialog.update_data(self.all_system_data, self.proc_ram_data)
 
     def closeEvent(self, event):
-        global proc_thread, ram_thread
+        global proc_thread, ram_thread, proc_processor_thread, ram_processor_thread
         self.timer.stop()
+
         proc_thread.stop()
-        #ram_thread.stop()
+        ram_thread.stop()
+        proc_processor_thread.stop()
+        ram_processor_thread.stop()
 
         proc_thread.wait()
-        #ram_thread.wait()
+        ram_thread.wait()
+        proc_processor_thread.wait()
+        ram_processor_thread.wait()
+
         super().closeEvent(event)
 
 
 def main():
-    global proc_thread, ram_thread, lock_PID, lock_gather_info
+    global proc_thread, ram_thread, lock_PID, lock_pub_info, proc_processor_thread, ram_processor_thread
+
     lock_gather_info = Lock()
     lock_PID = Lock()
+    lock_final_data = Lock()
+    lock_pub_info = Lock()
 
     proc_thread = ProcDataThread(lock_gather_info, lock_PID)
-    #ram_thread = MemDataThread(lock_gather_info, lock_PID)
+    ram_thread = MemDataThread(lock_gather_info, lock_PID)
+    proc_processor_thread = ShowProcDataThread(lock_gather_info, lock_final_data, lock_pub_info)
+    ram_processor_thread = ShowMemDataThread(lock_gather_info, lock_final_data, lock_pub_info)
 
     proc_thread.start()
-    #ram_thread.start()
+    ram_thread.start()
+    proc_processor_thread.start()
+    ram_processor_thread.start()
 
     time.sleep(0.5)
     app = QApplication(sys.argv)
