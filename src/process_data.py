@@ -15,7 +15,7 @@ class DataProcesser:
 
 
     def proc_processor(self):
-        print("\n\n\n\n\n\n\n\n\n")
+
         if not self.lock_gather_info:
             return
         
