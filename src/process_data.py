@@ -11,19 +11,19 @@ class DataProcesser:
 
     def __init__(self):
         self.lock_gather_info = None
-        self.lock_final_data = None
         self.lock_pub_info = None
 
 
     def proc_processor(self):
-
+        print("\n\n\n\n\n\n\n\n\n")
         if not self.lock_gather_info:
             return
-
+        
         with self.lock_gather_info:
             for_percent = copy.deepcopy(data_classes.get_GATHERED_DATA())
-
+        
         if for_percent is None:
+            
             return
         
         time.sleep(0.4)
@@ -89,6 +89,7 @@ class DataProcesser:
         
         with self.lock_pub_info:
             data_classes.set_SHOW_SYSTEM_DATA(copy.deepcopy(pub_info))
+        
 
 
     def ram_processor(self):
@@ -133,20 +134,19 @@ class DataProcesser:
         with self.lock_pub_info:
             data_classes.set_SHOW_RAM_DATA(copy.deepcopy(pub))
 
-    def set_locks(self, lock_gather_info, lock_final_data, lock_pub_info):
-        self.lock_gather_info = lock_gather_info
-        self.lock_final_data = lock_final_data
+    def set_locks(self, lock_gather_info, lock_pub_info):
         self.lock_pub_info = lock_pub_info
+        self.lock_gather_info = lock_gather_info
 
 var = DataProcesser()
 
-def run_proc_processor(lock_gather_info, lock_final_data, lock_pub_info):
+def run_proc_processor(lock_gather_info, lock_pub_info):
 
-    var.set_locks(lock_gather_info, lock_final_data, lock_pub_info)
+    var.set_locks(lock_gather_info, lock_pub_info)
     
     var.proc_processor()
 
-def run_mem_processor(lock_gather_info, lock_final_data, lock_pub_info):
-    var.set_locks(lock_gather_info, lock_final_data, lock_pub_info)
+def run_mem_processor(lock_gather_info, lock_pub_info):
+    var.set_locks(lock_gather_info, lock_pub_info)
 
     var.ram_processor()
