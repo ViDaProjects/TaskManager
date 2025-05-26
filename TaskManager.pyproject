@@ -1,9 +1,18 @@
 {
     "files": [
-        "mainwindow.py",
-        "form.ui",
         ".gitignore",
-        "ui_form.py",
-        "README.md"
+        "README.md",
+        "src/data_classes.py",
+        "src/gathered_info.md",
+        "gui/form.ui",
+        "gui/mainwindow.py",
+        "gui/ui_form.py",
+        "gui/graph_page.py",
+        "gui/process.ui",
+        "src/data_gather.py",
+        "src/process_data.py",
+        "src/qthread_gatherer.py",
+        "gui/ProcessDialog.py",
+        "gui/ui_process_dialog.py"
     ]
 }
