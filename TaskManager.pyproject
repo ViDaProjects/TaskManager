@@ -3,15 +3,14 @@
         ".gitignore",
         "README.md",
         "src/data_classes.py",
-        "src/gather_data_main.py",
         "src/gathered_info.md",
-        "src/list_names.py",
-        "src/pointer_func.py",
-        "src/thread_test.py",
         "gui/form.ui",
         "gui/mainwindow.py",
         "gui/ui_form.py",
         "gui/graph_page.py",
-        "gui/process.ui"
+        "gui/process.ui",
+        "src/data_gather.py",
+        "src/process_data.py",
+        "src/qthread_gatherer.py"
     ]
 }

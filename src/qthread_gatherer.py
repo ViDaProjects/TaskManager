@@ -1,5 +1,5 @@
 from PySide6.QtCore import QThread
-import data_gather
+import src.data_gather as data_gather
 import time
 
 class ProcDataThread(QThread):

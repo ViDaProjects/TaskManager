@@ -2,8 +2,8 @@ import os
 import re
 import time
 import threading
-from data_classes import ProcessData, SystemData, ProcRam
-from data_classes import GATHERED_DATA, PID
+from src.data_classes import ProcessData, SystemData, ProcRam
+from src.data_classes import GATHERED_DATA, PID
 import copy
 
 PROC_DIR = "/proc"

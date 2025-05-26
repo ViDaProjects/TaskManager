@@ -1,8 +1,10 @@
 # This Python file uses the following encoding: utf-8
 import sys
+import time
 from dataclasses import fields
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView, QAbstractItemView
 from PySide6.QtCore import QTimer
+from threading import Lock
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -11,6 +13,7 @@ from PySide6.QtCore import QTimer
 from gui.ui_form import Ui_MainWindow
 from src.data_classes import ShowProcessData, ShowSystemData
 from gui.graph_page import GraphPage
+from src.qthread_gatherer import ProcDataThread, MemDataThread
 
 example_data = ShowSystemData(
     cpu_usage=48.5,
@@ -23,10 +26,10 @@ example_data = ShowSystemData(
     proc_count_total=138,
     thread_count_total=754,
     process=[
-        ShowProcessData(name="systemd", thread_count_proc=10, prio=20, prio_type="Normal", cpu_usage=1.2),
-        ShowProcessData(name="chrome", thread_count_proc=36, prio=10, prio_type="User", cpu_usage=12.8),
-        ShowProcessData(name="python", thread_count_proc=8, prio=5, prio_type="User", cpu_usage=7.3),
-        ShowProcessData(name="code", thread_count_proc=15, prio=0, prio_type="Normal", cpu_usage=3.9),
+        ShowProcessData(name="systemd", pid=2108, thread_count_proc=10, prio=20, prio_type="Normal", cpu_usage=1.2),
+        ShowProcessData(name="chrome", pid=2408, thread_count_proc=36, prio=10, prio_type="User", cpu_usage=12.8),
+        ShowProcessData(name="python", pid=2208, thread_count_proc=8, prio=5, prio_type="User", cpu_usage=7.3),
+        ShowProcessData(name="code", pid=2138, thread_count_proc=15, prio=0, prio_type="Normal", cpu_usage=3.9),
     ]
 )
 
@@ -45,7 +48,7 @@ class MainWindow(QMainWindow):
         #process page
         self.ui.process_table.setColumnCount(len(fields(ShowProcessData)))
         self.ui.process_table.setHorizontalHeaderLabels([
-            "Name", "Threads", "Priority", "Priority type", "CPU usage"
+            "Name", "PID", "Threads", "Priority", "Priority type", "CPU usage"
         ])
         self.ui.process_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.change_current_stack_page(PROCESSES_PAGE_INDEX)
@@ -66,7 +69,7 @@ class MainWindow(QMainWindow):
         #Alterar quando receber sinal de dados prontos
         self.timer.timeout.connect(lambda: self.update_stack_pages(example_data))
 
-        #Fill pages, then start timer
+        #Fill pages, then start timer -------- GET DATA
         self.update_stack_pages(example_data)
         self.timer.start(5000) #5 seconds
 
@@ -79,15 +82,20 @@ class MainWindow(QMainWindow):
         self.ui.stacked_pages.setCurrentIndex(new_page_index)
 
     def fill_process_table(self, processes: list[ShowProcessData]):
+        if processes is None:
+            print("No process to show")
+            return
+
         table = self.ui.process_table
         table.setRowCount(len(processes))
 
         for row, proc in enumerate(processes):
             table.setItem(row, 0, QTableWidgetItem(proc.name))
-            table.setItem(row, 1, QTableWidgetItem(f"{proc.thread_count_proc:.0f}"))
-            table.setItem(row, 2, QTableWidgetItem(f"{proc.prio:.0f}"))
-            table.setItem(row, 3, QTableWidgetItem(proc.prio_type))
-            table.setItem(row, 4, QTableWidgetItem(f"{proc.cpu_usage:.0f}"))
+            table.setItem(row, 1, QTableWidgetItem(f"{proc.pid:.0f}"))
+            table.setItem(row, 2, QTableWidgetItem(f"{proc.thread_count_proc:.0f}"))
+            table.setItem(row, 3, QTableWidgetItem(f"{proc.prio:.0f}"))
+            table.setItem(row, 4, QTableWidgetItem(proc.prio_type))
+            table.setItem(row, 5, QTableWidgetItem(f"{proc.cpu_usage:.0f}"))
 
         table.resizeRowsToContents()
 
@@ -99,11 +107,13 @@ class MainWindow(QMainWindow):
 
         print("update data")
 
-        #Atualizar labels: total proc, total threads, mem usada, swap usado
+        #Update labels
         self.ui.total_proc_label.setText(f"{data.proc_count_total:.0f}")
         self.ui.total_threads_label.setText(f"{data.thread_count_total:.0f}")
         self.ui.total_ram_label.setText(f"{data.mem_used:.0f}/{data.mem_total:.0f} MB")
         self.ui.total_swap_label.setText(f"{data.swap_used:.0f}/{data.swap_total:.0f} MB")
+
+        #Update graphs
         self.cpu_graph.update_graph([data.cpu_usage])
         self.memory_graph.update_graph([data.mem_used_percent, data.swap_used_percent])
 
@@ -115,11 +125,32 @@ class MainWindow(QMainWindow):
         #if dialog is not none, atualiza dialog?
 
     def closeEvent(self, event):
+        global proc_thread, ram_thread
         self.timer.stop()
+        proc_thread.stop()
+        ram_thread.stop()
+
+        proc_thread.wait()
+        ram_thread.wait()
         super().closeEvent(event)
 
 
+proc_thread = None
+ram_thread = None
+lock_PID = None
+
 def main():
+    global proc_thread, ram_thread, lock_PID
+    lock_gather_info = Lock()
+    lock_PID = Lock()
+
+    proc_thread = ProcDataThread(lock_gather_info, lock_PID)
+    ram_thread = MemDataThread(lock_gather_info, lock_PID)
+
+    proc_thread.start()
+    ram_thread.start()
+
+    time.sleep(0.5)
     app = QApplication(sys.argv)
     widget = MainWindow()
     widget.show()
