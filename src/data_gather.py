@@ -13,6 +13,7 @@ SCHED_FILE = "sched"
 STAT_FILE = "stat"
 SMAPS_FILE = "smaps"
 STATM_FILE = "statm"
+TASK_DIR = "task"
 
 
 
@@ -91,8 +92,6 @@ class DataMiner:
             data_classes.set_RAM_INFO(ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, in_swap_kb, t))
         print("Ram data published")
 
-
-
     # Reading proc file outside of pid
     def read_proc_data(self, file):
 
@@ -105,27 +104,73 @@ class DataMiner:
             # Skip if the file can't be read (e.g., process has exited)
             return
         return data
+    
+    def get_proc_available_data(self, pid):
+        proc_count+=1
 
+        thread_path = os.path.join(PROC_DIR, pid, TASK_DIR)
+
+        try:
+            lst = os.listdir(thread_path) # your directory path
+            thread_count_proc = len(lst)
+        except:
+            thread_count_proc = 0
+
+        name = self.read_proc_file(pid, "comm")# This dir has only proc name
+        
+        if not name:
+            return
+        name = name[0]
+
+        sched = self.read_proc_file(pid, SCHED_FILE)
+
+        if not sched:
+            return
+        
+        # Static priority data
+        prio = self.get_numbers_list(sched[23])[0] # Retorna lista de int
+
+        # Task cpu runtime data WRONG
+        cpu_runtime = self.get_numbers_list(sched[4])[0] # Probably wrong data
+
+        stat = self.read_proc_file(pid, STAT_FILE)
+        
+        if not stat:
+            return
+
+        stat = stat[0].split() # stat is a single line with values concatenated
+        
+        user_cpu_time = int(stat[13])
+        system_cpu_time = int(stat[14]) # syscalls and admin runningg
+
+        proc_data = ProcessData(name, pid, thread_count_proc, prio, user_cpu_time, system_cpu_time)
+
+        return proc_data
+
+    def get_system_available_data(self):
+        cpu_info = self.read_proc_data("stat")[0]
+        cpu_info = self.get_numbers_list(cpu_info)
+
+        cpu_runtime = sum(cpu_info)
+        cpu_active_time = cpu_runtime - cpu_info[3] - cpu_info[4] # Positions for cpu idle and iowait
+        
+        ram_info = self.read_proc_data("meminfo")
+
+        mem_total = self.get_numbers_list(ram_info[0])[0]
+        mem_unused = self.get_numbers_list(ram_info[1])[0]
+        mem_available = self.get_numbers_list(ram_info[2])[0]
+
+
+        swap_total = self.get_numbers_list(ram_info[14])[0]
+        swap_free = self.get_numbers_list(ram_info[15])[0]
+
+        t = time.time()
+
+        return cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, t
 
     def get_proc_data(self):
 
-            cpu_info = self.read_proc_data("stat")[0]
-            cpu_info = self.get_numbers_list(cpu_info)
-
-            cpu_runtime = sum(cpu_info)
-            cpu_active_time = cpu_runtime - cpu_info[3] - cpu_info[4] # Positions for cpu idle and iowait
-            
-            ram_info = self.read_proc_data("meminfo")
-
-            mem_total = self.get_numbers_list(ram_info[0])[0]
-            mem_unused = self.get_numbers_list(ram_info[1])[0]
-            mem_available = self.get_numbers_list(ram_info[2])[0]
-
-
-            swap_total = self.get_numbers_list(ram_info[14])[0]
-            swap_free = self.get_numbers_list(ram_info[15])[0]
-
-            t = time.time()
+            cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, t = self.get_system_available_data()
 
             sys_data = SystemData(cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, 0, 0, [], t)
             
@@ -133,44 +178,17 @@ class DataMiner:
 
             for file in os.listdir(PROC_DIR):
                 if self.is_numeric(file):
-                    proc_count+=1
 
-                    thread_count_proc = 1
-                    
-                    name = self.read_proc_file(file, "comm")# This dir has only proc name
-                    
-                    if not name:
+                    proc = self.get_proc_available_data(file)
+
+                    if not proc:
                         continue
-                    name = name[0]
 
-                    sched = self.read_proc_file(file, SCHED_FILE)
+                    proc_count += 1
 
-                    if not sched:
-                        continue
-                    
-                    # Static priority data
-                    prio = self.get_numbers_list(sched[23])[0] # Retorna lista de int
-                    
-                    #print("PRIO: " + prio_type + "\t" + str(prio))
+                    thread_count += proc.thread_count_proc
 
-                    # Task cpu runtime data
-                    cpu_runtime = self.get_numbers_list(sched[4])[0] # Probably wrong data
-                    #print(cpu_runtime)
-
-                    stat = self.read_proc_file(file, STAT_FILE)
-                    
-                    if not stat:
-                        continue
-                    
-
-                    stat = stat[0].split() # stat is a single line with values concatenated
-                    
-                    user_cpu_time = int(stat[13])
-                    system_cpu_time = int(stat[14]) # syscalls and admin runningg
-
-                    proc_data = ProcessData(name, file, thread_count_proc, prio, user_cpu_time, system_cpu_time)
-                    
-                    sys_data.process.append(proc_data)
+                    sys_data.process.append(proc)
             
             sys_data.proc_count = proc_count
             sys_data.thread_count_total = thread_count
