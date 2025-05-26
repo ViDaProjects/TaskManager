@@ -5,26 +5,24 @@ import time
 from threading import Lock
 
 class ShowProcDataThread(QThread):
-    def __init__(self, lock_gather_info, lock_final_data, lock_pub_info):
+    def __init__(self, lock_gather_info, lock_pub_info):
         super().__init__()
         self.lock_gather_info = lock_gather_info
-        self.lock_final_data = lock_final_data
         self.lock_pub_info = lock_pub_info
         self._running = True
 
     def run(self):
         while self._running:
             time.sleep(1)
-            process_data.run_proc_processor(self.lock_gather_info, self.lock_final_data, self.lock_pub_info)
+            process_data.run_proc_processor(self.lock_gather_info, self.lock_pub_info)
 
     def stop(self):
         self._running = False
 
 class ShowMemDataThread(QThread):
-    def __init__(self, lock_gather_info, lock_final_data, lock_pub_info):
+    def __init__(self, lock_gather_info, lock_pub_info):
         super().__init__()
         self.lock_gather_info = lock_gather_info
-        self.lock_final_data = lock_final_data
         self.lock_pub_info = lock_pub_info
         self._running = True
 
@@ -32,7 +30,7 @@ class ShowMemDataThread(QThread):
         
         while self._running:
             time.sleep(0.1)
-            process_data.run_mem_processor(self.lock_gather_info, self.lock_final_data, self.lock_pub_info)
+            process_data.run_mem_processor(self.lock_gather_info, self.lock_pub_info)
 
     def stop(self):
         self._running = False
@@ -82,8 +80,8 @@ if __name__ == "__main__":
 
     proc_thread = ProcDataThread(lock_gather_info, lock_PID)
     ram_thread = MemDataThread(lock_gather_info, lock_PID)
-    proc_processor_thread = ShowProcDataThread(lock_gather_info, lock_final_data, lock_pub_info)
-    ram_processor_thread = ShowMemDataThread(lock_gather_info, lock_final_data, lock_pub_info)
+    proc_processor_thread = ShowProcDataThread(lock_gather_info, lock_pub_info)
+    ram_processor_thread = ShowMemDataThread(lock_gather_info, lock_pub_info)
 
     proc_thread.start()
     ram_thread.start()
