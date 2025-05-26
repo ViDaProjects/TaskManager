@@ -15,6 +15,7 @@ PID = 0
 @dataclass
 class ProcessData:
     name: str
+    pid: str
     thread_count_proc: float
     prio: float
     user_cpu_time: float
@@ -47,6 +48,7 @@ class ProcRam:
 @dataclass
 class ShowProcessData:
     name: str
+    pid: str
     thread_count_proc: float
     prio: float
     prio_type: str
@@ -56,13 +58,14 @@ class ShowProcessData:
 class ShowSystemData:
     cpu_usage: float 
     mem_total: float
+    mem_used: float
     mem_used_percent: float
+    swap_used: float
     swap_total: float
     swap_used_percent: float
     proc_count_total: float
     thread_count_total: float
     process: list[ShowProcessData]
-    time: float
 
 @dataclass
 class ShowRamData:
@@ -72,4 +75,3 @@ class ShowRamData:
     clean_shared_size: float
     clean_private_size: float
     in_swap: float
-    time:float

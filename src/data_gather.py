@@ -155,7 +155,7 @@ class DataMiner:
                     user_cpu_time = int(stat[13])
                     system_cpu_time = int(stat[14]) # syscalls and admin runningg
 
-                    proc_data = ProcessData(name, thread_count_proc, prio, user_cpu_time, system_cpu_time)
+                    proc_data = ProcessData(name, file, thread_count_proc, prio, user_cpu_time, system_cpu_time)
 
                     sys_data.process.append(proc_data)
             
