@@ -1,4 +1,4 @@
-import src.data_classes as data_classes
+import data_classes as data_classes
 import copy
 import time
 import os
@@ -99,7 +99,7 @@ class DataProcesser:
 
         with self.lock_gather_info:
             ram_data = copy.deepcopy(data_classes.get_RAM_INFO())
-        
+        print(ram_data)
         if ram_data is None:
             return
 
@@ -125,8 +125,12 @@ class DataProcesser:
 
         real_size_not_share_kb = real_size_share_kb - shared_size_kb
 
-        dirty_percentage = 100 * dirty_size_kb / real_size_share_kb
-        swap_percentage = 100 * in_swap_kb / real_size_share_kb
+        if real_size_share_kb:
+            dirty_percentage = 100 * dirty_size_kb / real_size_share_kb
+            swap_percentage = 100 * in_swap_kb / real_size_share_kb
+        else:
+            dirty_percentage = 100 * dirty_size_kb / real_size_share_kb
+            swap_percentage = 100 * in_swap_kb / real_size_share_kb
 
 
         pub = data_classes.ShowRamData(virtual_size_kb, data_stack_size_kb, real_size_share_kb, real_size_not_share_kb, dirty_percentage, swap_percentage)
