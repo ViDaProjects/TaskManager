@@ -2,7 +2,7 @@
 
 from PySide6.QtWidgets import QDialog
 from gui.ui_process_dialog import Ui_Dialog  # import gerado
-from src.data_classes import ShowProcessData, ShowRamData
+from data_classes import ShowProcessData, ShowRamData
 from gui.graph_page import GraphPage
 
 #Fill process data with gathered data

@@ -12,11 +12,11 @@ from threading import Lock
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
 from gui.ui_form import Ui_MainWindow
-from src.data_classes import ShowProcessData, ShowSystemData
+from data_classes import ShowProcessData, ShowSystemData
 from gui.graph_page import GraphPage
-from src.qthread_gatherer import ProcDataThread, MemDataThread
+from qthread_gatherer import ProcDataThread, MemDataThread
 from gui.ProcessDialog import ProcessDialog
-import src.data_classes
+import data_classes
 
 proc_thread = None
 ram_thread = None
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         if 0 <= row < len(self.show_process_list):
             process = self.show_process_list[row]
             with lock_PID:
-                src.data_classes.set_PID(process[1]) #Get current PID value
+                data_classes.set_PID(process[1]) #Get current PID value
 
             time.sleep(0.5) #Time to wait data
             self.dialog = ProcessDialog(self.all_system_data, self.proc_ram_data, self)
@@ -123,8 +123,8 @@ class MainWindow(QMainWindow):
 
     def update_stack_pages(self):
         with lock_gather_info:
-            self.all_system_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
-            self.proc_ram_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
+            self.all_system_data = copy.deepcopy(data_classes.get_SHOW_SYSTEM_DATA())
+            self.proc_ram_data = copy.deepcopy(data_classes.get_SHOW_SYSTEM_DATA())
             #COPY PROC_RAM_DATA -----------------------
 
         if not isinstance(self.all_system_data, ShowSystemData):

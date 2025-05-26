@@ -1,4 +1,4 @@
-import data_classes as data_classes
+import src.data_classes as data_classes
 import copy
 import time
 import os
