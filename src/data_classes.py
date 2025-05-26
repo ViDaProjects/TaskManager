@@ -9,7 +9,7 @@ global RAM_INFO
 RAM_INFO = None
 
 global PID
-PID = 1607
+PID = 1908
 
 global SHOW_PROC_DATA
 SHOW_PROC_DATA = None
@@ -73,9 +73,9 @@ class ShowSystemData:
 
 @dataclass
 class ShowRamData:
-    virtal_size: float
-    real_mem_share: float
-    real_mem_not_share: float
-    clean_shared_size: float
-    clean_private_size: float
-    in_swap: float
+    virtual_size_kb: float
+    data_stack_size_kb: float
+    real_size_share_kb: float
+    real_size_not_share_kb: float
+    dirty_percentage: float
+    swap_percentage: float

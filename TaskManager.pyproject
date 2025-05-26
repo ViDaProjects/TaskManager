@@ -11,6 +11,8 @@
         "gui/process.ui",
         "src/data_gather.py",
         "src/process_data.py",
-        "src/qthread_gatherer.py"
+        "src/qthread_gatherer.py",
+        "gui/ProcessDialog.py",
+        "gui/ui_process_dialog.py"
     ]
 }
