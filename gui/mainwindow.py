@@ -152,23 +152,23 @@ class MainWindow(QMainWindow):
         global proc_thread, ram_thread
         self.timer.stop()
         proc_thread.stop()
-        ram_thread.stop()
+        #ram_thread.stop()
 
         proc_thread.wait()
-        ram_thread.wait()
+        #ram_thread.wait()
         super().closeEvent(event)
 
 
 def main():
-    global proc_thread, ram_thread, lock_PID
+    global proc_thread, ram_thread, lock_PID, lock_gather_info
     lock_gather_info = Lock()
     lock_PID = Lock()
 
     proc_thread = ProcDataThread(lock_gather_info, lock_PID)
-    ram_thread = MemDataThread(lock_gather_info, lock_PID)
+    #ram_thread = MemDataThread(lock_gather_info, lock_PID)
 
     proc_thread.start()
-    ram_thread.start()
+    #ram_thread.start()
 
     time.sleep(0.5)
     app = QApplication(sys.argv)

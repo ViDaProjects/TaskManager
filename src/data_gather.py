@@ -3,7 +3,8 @@ import re
 import time
 import threading
 from src.data_classes import ProcessData, SystemData, ProcRam
-from src.data_classes import GATHERED_DATA, PID
+#from data_classes import GATHERED_DATA, PID
+import src.data_classes as data_classes
 import copy
 
 PROC_DIR = "/proc"
@@ -17,9 +18,9 @@ STATM_FILE = "statm"
 
 class DataMiner:
 
-    def __init__(self, lock_gather_info, lock_pid):
-        self.lock_gather_info = lock_gather_info
-        self.lock_pid = lock_pid
+    def __init__(self):
+        self.lock_gather_info = None
+        self.lock_pid = None
 
     def is_numeric(self, s):
         return s.isdigit()
@@ -89,7 +90,6 @@ class DataMiner:
         with self.lock_gather_info:
             RAM_INFO = ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, in_swap_kb, t)
 
-        print("ram data published")
 
     # Reading proc file outside of pid
     def read_proc_data(self, file):
@@ -126,28 +126,20 @@ class DataMiner:
             t = time.time()
 
             sys_data = SystemData(cpu_runtime, cpu_active_time, mem_total, mem_unused, mem_available, swap_total, swap_free, 0, 0, [], t)
-
+            
             proc_count = thread_count = 0
+
             for file in os.listdir(PROC_DIR):
                 if self.is_numeric(file):
                     proc_count+=1
 
-                    path = os.path.join(PROC_DIR, file, "task")
-
                     thread_count_proc = 1
-                    try:
-                        threads = os.listdir(path)
-                        thread_count += len(threads)
-                        thread_count_proc = len(threads)
-                    except (FileNotFoundError, PermissionError):
-                        thread_count_proc = 0
-                        continue
+                    
                     name = self.read_proc_file(file, "comm")# This dir has only proc name
                     
                     if not name:
                         continue
                     name = name[0]
-                    #print(f"PID: {file}\tName: {name}")
 
                     sched = self.read_proc_file(file, SCHED_FILE)
 
@@ -167,29 +159,43 @@ class DataMiner:
                     
                     if not stat:
                         continue
-
+                    
 
                     stat = stat[0].split() # stat is a single line with values concatenated
-
+                    
                     user_cpu_time = int(stat[13])
                     system_cpu_time = int(stat[14]) # syscalls and admin runningg
 
                     proc_data = ProcessData(name, file, thread_count_proc, prio, user_cpu_time, system_cpu_time)
-
+                    
                     sys_data.process.append(proc_data)
             
             sys_data.proc_count = proc_count
             sys_data.thread_count_total = thread_count
+            
+            if not self.lock_gather_info:
+                return
             with self.lock_gather_info:
-                GATHERED_DATA = copy.deepcopy(sys_data)
+                
+                data_classes.set_GATHERED_DATA(copy.deepcopy(sys_data))
+
             print("proc data published")
 
+            running = False
             return 0
+    
+    def set_locks(self, lock_gather_info, lock_pid):
+        self.lock_gather_info = lock_gather_info
+        self.lock_pid = lock_pid
+
+var = DataMiner()
+
+lock = threading.Lock()
 
 def gather_proc_data(lock_gather_info, lock_pid):
-    var = DataMiner(lock_gather_info, lock_pid)
-    
-    var.get_proc_data()
+
+            var.set_locks(lock_gather_info, lock_pid)
+            var.get_proc_data()
 
 def gather_mem_data(lock_gather_info, lock_pid):
     var = DataMiner(lock_gather_info, lock_pid)
@@ -199,5 +205,5 @@ def gather_mem_data(lock_gather_info, lock_pid):
 if __name__ == "__main__":
     lock_gather_info = threading.Lock()
     lock_pid = threading.Lock()
-    #gather_proc_data(lock_gather_info, lock_pid)
-    gather_mem_data(lock_gather_info, lock_pid)
+    gather_proc_data(lock_gather_info, lock_pid)
+    #gather_mem_data(lock_gather_info, lock_pid)
