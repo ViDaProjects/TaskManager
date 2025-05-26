@@ -41,3 +41,24 @@ class ProcRam:
     clean_shared_size: float
     clean_private_size: float
     in_swap: float
+
+@dataclass
+class ShowProcessData:
+    name: str
+    thread_count_proc: float
+    prio: float
+    prio_type: str
+    cpu_usage: float
+
+@dataclass
+class ShowSystemData:
+    cpu_usage: float
+    mem_total: float
+    mem_used: float
+    mem_used_percent: float
+    swap_used: float
+    swap_total: float
+    swap_used_percent: float
+    proc_count_total: float
+    thread_count_total: float
+    process: list[ShowProcessData]

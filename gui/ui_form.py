@@ -219,15 +219,51 @@ class Ui_MainWindow(object):
         self.frame_11.setSizePolicy(sizePolicy)
         self.frame_11.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_11.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_7 = QHBoxLayout(self.frame_11)
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_6 = QVBoxLayout(self.frame_11)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.process_table = QTableWidget(self.frame_11)
         self.process_table.setObjectName(u"process_table")
         self.process_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.process_table.setGridStyle(Qt.PenStyle.DashLine)
 
-        self.horizontalLayout_7.addWidget(self.process_table)
+        self.verticalLayout_6.addWidget(self.process_table)
+
+        self.labels_frame = QFrame(self.frame_11)
+        self.labels_frame.setObjectName(u"labels_frame")
+        self.labels_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.labels_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_9 = QHBoxLayout(self.labels_frame)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.label_9 = QLabel(self.labels_frame)
+        self.label_9.setObjectName(u"label_9")
+
+        self.horizontalLayout_9.addWidget(self.label_9)
+
+        self.total_proc_label = QLabel(self.labels_frame)
+        self.total_proc_label.setObjectName(u"total_proc_label")
+
+        self.horizontalLayout_9.addWidget(self.total_proc_label)
+
+        self.line = QFrame(self.labels_frame)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.VLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_9.addWidget(self.line)
+
+        self.label_11 = QLabel(self.labels_frame)
+        self.label_11.setObjectName(u"label_11")
+
+        self.horizontalLayout_9.addWidget(self.label_11, 0, Qt.AlignmentFlag.AlignRight)
+
+        self.total_threads_label = QLabel(self.labels_frame)
+        self.total_threads_label.setObjectName(u"total_threads_label")
+
+        self.horizontalLayout_9.addWidget(self.total_threads_label, 0, Qt.AlignmentFlag.AlignRight)
+
+
+        self.verticalLayout_6.addWidget(self.labels_frame)
 
 
         self.verticalLayout_5.addWidget(self.frame_11)
@@ -263,6 +299,42 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
 
         self.verticalLayout_11.addWidget(self.mem_graph_frame)
+
+        self.frame = QFrame(self.memory_use_page)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_7 = QHBoxLayout(self.frame)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.label_13 = QLabel(self.frame)
+        self.label_13.setObjectName(u"label_13")
+
+        self.horizontalLayout_7.addWidget(self.label_13, 0, Qt.AlignmentFlag.AlignLeft)
+
+        self.total_ram_label = QLabel(self.frame)
+        self.total_ram_label.setObjectName(u"total_ram_label")
+
+        self.horizontalLayout_7.addWidget(self.total_ram_label)
+
+        self.line_2 = QFrame(self.frame)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_7.addWidget(self.line_2)
+
+        self.label_10 = QLabel(self.frame)
+        self.label_10.setObjectName(u"label_10")
+
+        self.horizontalLayout_7.addWidget(self.label_10, 0, Qt.AlignmentFlag.AlignRight)
+
+        self.total_swap_label = QLabel(self.frame)
+        self.total_swap_label.setObjectName(u"total_swap_label")
+
+        self.horizontalLayout_7.addWidget(self.total_swap_label, 0, Qt.AlignmentFlag.AlignRight)
+
+
+        self.verticalLayout_11.addWidget(self.frame)
 
         self.stacked_pages.addWidget(self.memory_use_page)
         self.cpu_use_page = QWidget()
@@ -311,7 +383,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.pushButton_4.setDefault(False)
-        self.stacked_pages.setCurrentIndex(0)
+        self.stacked_pages.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -328,7 +400,15 @@ class Ui_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Menu", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"DASHBOARD", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Running processes", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Processes:", None))
+        self.total_proc_label.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Threads:", None))
+        self.total_threads_label.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Memory usage", None))
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"RAM:", None))
+        self.total_ram_label.setText(QCoreApplication.translate("MainWindow", u"0/0 MB", None))
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Swap:", None))
+        self.total_swap_label.setText(QCoreApplication.translate("MainWindow", u"0/0 MB", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"CPU usage", None))
     # retranslateUi
 
