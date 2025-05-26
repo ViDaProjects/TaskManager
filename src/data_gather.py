@@ -106,7 +106,6 @@ class DataMiner:
         return data
     
     def get_proc_available_data(self, pid):
-        proc_count+=1
 
         thread_path = os.path.join(PROC_DIR, pid, TASK_DIR)
 

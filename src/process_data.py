@@ -131,8 +131,6 @@ class DataProcesser:
         pub = data_classes.ShowRamData(virtual_size_kb, data_stack_size_kb, real_size_share_kb, real_size_not_share_kb, dirty_percentage, swap_percentage)
 
         with self.lock_pub_info:
-            print("#######################################")
-            print(pub)
             data_classes.set_SHOW_RAM_DATA(copy.deepcopy(pub))
 
     def set_locks(self, lock_gather_info, lock_pub_info):
