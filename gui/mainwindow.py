@@ -23,27 +23,10 @@ ram_thread = None
 lock_PID = None
 lock_gather_info = None
 
-example_data = ShowSystemData(
-    cpu_usage=48.5,
-    mem_total=8192.0,
-    mem_used=5120.0,
-    mem_used_percent=62.5,
-    swap_used=256.0,
-    swap_total=2048.0,
-    swap_used_percent=12.5,
-    proc_count_total=138,
-    thread_count_total=754,
-    process=[
-        ShowProcessData(name="systemd", pid="2108", thread_count_proc=10, prio=20, prio_type="Normal", cpu_usage=1.2),
-        ShowProcessData(name="chrome", pid="2408", thread_count_proc=36, prio=10, prio_type="User", cpu_usage=12.8),
-        ShowProcessData(name="python", pid="2208", thread_count_proc=8, prio=5, prio_type="User", cpu_usage=7.3),
-        ShowProcessData(name="code", pid="2138", thread_count_proc=15, prio=0, prio_type="Normal", cpu_usage=3.9),
-    ]
-)
-
 PROCESSES_PAGE_INDEX = 0
 MEMORY_USE_PAGE_INDEX = 1
 CPU_USE_PAGE_INDEX = 2
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -81,7 +64,7 @@ class MainWindow(QMainWindow):
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_stack_pages)
         self.update_stack_pages()
-        self.timer.start(3000) #3 seconds
+        self.timer.start(2000) #3 seconds
 
         #Connects signals
         self.ui.processes_button.clicked.connect(lambda: self.change_current_stack_page(PROCESSES_PAGE_INDEX))
@@ -127,7 +110,6 @@ class MainWindow(QMainWindow):
         with lock_pub_info:
             self.all_system_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
             self.proc_ram_data = copy.deepcopy(src.data_classes.get_SHOW_RAM_DATA())
-            print(type(src.data_classes.get_SHOW_RAM_DATA()))
 
         if not isinstance(self.all_system_data, ShowSystemData):
             print("System data is not valid")
@@ -148,7 +130,7 @@ class MainWindow(QMainWindow):
         self.fill_process_table(self.all_system_data.process)
 
         #Update dialog, if its open
-        if self.dialog is not None:
+        if self.dialog is not None and (self.dialog_row <= len(self.show_process_list)):
             self.dialog.update_data(self.show_process_list[self.dialog_row], self.proc_ram_data)
 
     def closeEvent(self, event):
