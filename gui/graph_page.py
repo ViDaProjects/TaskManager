@@ -15,7 +15,6 @@ class GraphPage(QWidget):
         self.data_points = []
 
         self.chart = QChart()
-        #self.chart.setTitle(title)
         self.chart.createDefaultAxes()
 
         self.axisX = QValueAxis()
@@ -48,7 +47,6 @@ class GraphPage(QWidget):
         self.series.append(serie)
 
         label = QGraphicsSimpleTextItem()
-        #label.setFont(QFont("Arial", 10))
         self.chart.scene().addItem(label)
         self.label_items.append(label)
         self.data_points.append([])
@@ -68,7 +66,6 @@ class GraphPage(QWidget):
         max_y = max(max(points) if points else 0 for points in self.data_points)
         self.axisY.setRange(0, max(100, max_y))
 
-        # Atualizar labels flutuantes
         for i, points in enumerate(self.data_points):
             if points:
                 last_x = len(points) - 1

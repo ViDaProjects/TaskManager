@@ -34,6 +34,7 @@ class DataMiner:
             match = [float(i) if '.' in i else int(i) for i in match]
             return match
 
+    #Transform each line in a vector position
     def read_proc_file(self, pid, file)->list[str]:
         path = os.path.join(PROC_DIR, pid, file)
         try:
@@ -90,7 +91,6 @@ class DataMiner:
 
         with self.lock_gather_info:
             data_classes.set_RAM_INFO(ProcRam(virtual_pages, real_pages_share, shared_pages, text_pages, data_stack_pages, dirty_pages, in_swap_kb, t))
-        print("Ram data published")
 
     # Reading proc file outside of pid
     def read_proc_data(self, file):
@@ -198,9 +198,7 @@ class DataMiner:
                 
                 data_classes.set_GATHERED_DATA(copy.deepcopy(sys_data))
 
-            print("proc data published")
 
-            running = False
             return 0
     
     def set_locks(self, lock_gather_info, lock_pid):

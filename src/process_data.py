@@ -1,9 +1,7 @@
 import src.data_classes as data_classes
 import copy
 import time
-import os
 import ctypes
-import threading
 
 #from data_classes import SHOW_SYSTEM_DATA
 
@@ -58,7 +56,6 @@ class DataProcesser:
 
         pub_info = data_classes.ShowSystemData(cpu_usage, mem_total, mem_used, mem_used_percent, swap_used, swap_total, swap_used_percent, proc_count_total, thread_count_total, [])
 
-        proc_processed_list = []
 
         for i in proc_data.process:
             if i.name not in names:
@@ -127,8 +124,8 @@ class DataProcesser:
             dirty_percentage = 100 * dirty_size_kb / real_size_share_kb
             swap_percentage = 100 * in_swap_kb / real_size_share_kb
         else:
-            dirty_percentage = 100 * dirty_size_kb / real_size_share_kb
-            swap_percentage = 100 * in_swap_kb / real_size_share_kb
+            dirty_percentage = 0
+            swap_percentage = 0
 
 
         pub = data_classes.ShowRamData(virtual_size_kb, data_stack_size_kb, real_size_share_kb, real_size_not_share_kb, dirty_percentage, swap_percentage)

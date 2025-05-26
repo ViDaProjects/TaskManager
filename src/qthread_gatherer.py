@@ -45,7 +45,6 @@ class ProcDataThread(QThread):
 
     def run(self):
         while self._running:
-            #print("here")
             time.sleep(0.1)
             data_gather.gather_proc_data(self.lock_gather_info, self.lock_pid)
             
@@ -100,4 +99,3 @@ if __name__ == "__main__":
     proc_processor_thread.wait()
     ram_processor_thread.wait()
 
-    print("Threads stopped.")
