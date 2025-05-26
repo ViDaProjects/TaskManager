@@ -48,7 +48,7 @@ class DataMiner:
         t = time.time()
 
         with self.lock_pid:
-            pid = data_classes.get_PID()
+            pid = copy.deepcopy(data_classes.get_PID())
 
         statm = self.read_proc_file(pid, STATM_FILE)
 

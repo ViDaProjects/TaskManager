@@ -1,6 +1,6 @@
 # This Python file uses the following encoding: utf-8
 
-from PySide6.QtWidgets import QDialog
+from PySide6.QtWidgets import QDialog, QVBoxLayout
 from gui.ui_process_dialog import Ui_Dialog  # import gerado
 from src.data_classes import ShowProcessData, ShowRamData
 from gui.graph_page import GraphPage
@@ -18,13 +18,19 @@ class ProcessDialog(QDialog):
         self.ram_graph.add_line_sample("Stack size")
         self.ram_graph.add_line_sample("Real size shared")
         self.ram_graph.add_line_sample("Real size NOT shared")
-        self.ui.ram_graph_frame.layout().addWidget(self.ram_graph)
+        self.graph_layout = QVBoxLayout()
+        self.ui.ram_graph_frame.setLayout(self.graph_layout)
+        self.graph_layout.addWidget(self.ram_graph)
 
         self.update_data(process, proc_ram)
+
 
     def update_data(self, process: ShowProcessData, proc_ram: ShowRamData):
         if not isinstance(process, ShowProcessData) or not isinstance(proc_ram, ShowRamData):
             print("Invalid data to dialog page. Could not use it")
+            print(process)
+            print("-----------------------------")
+            print(proc_ram)
             return
 
         self.ui.name_label.setText(process.name)

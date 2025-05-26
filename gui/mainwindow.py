@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
 
         #Init configs
         self.dialog = None
+        self.dialog_row = None
         self.show_process_list = []
         self.all_system_data = None
         self.proc_ram_data = None
@@ -91,11 +92,12 @@ class MainWindow(QMainWindow):
     def open_process_info(self, row):
         if 0 <= row < len(self.show_process_list):
             process = self.show_process_list[row]
+            self.dialog_row = row
             with lock_PID:
                 src.data_classes.set_PID(process.pid) #Get current PID value
 
             time.sleep(0.5) #Time to wait data
-            self.dialog = ProcessDialog(self.all_system_data, self.proc_ram_data, self)
+            self.dialog = ProcessDialog(self.show_process_list[self.dialog_row], self.proc_ram_data, self)
             self.dialog.finished.connect(lambda _: setattr(self, "dialog", None))
             self.dialog.exec()
 
@@ -125,6 +127,7 @@ class MainWindow(QMainWindow):
         with lock_pub_info:
             self.all_system_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
             self.proc_ram_data = copy.deepcopy(src.data_classes.get_SHOW_RAM_DATA())
+            print(type(src.data_classes.get_SHOW_RAM_DATA()))
 
         if not isinstance(self.all_system_data, ShowSystemData):
             print("System data is not valid")
@@ -146,7 +149,7 @@ class MainWindow(QMainWindow):
 
         #Update dialog, if its open
         if self.dialog is not None:
-            self.dialog.update_data(self.all_system_data, self.proc_ram_data)
+            self.dialog.update_data(self.show_process_list[self.dialog_row], self.proc_ram_data)
 
     def closeEvent(self, event):
         global proc_thread, ram_thread, proc_processor_thread, ram_processor_thread
@@ -170,13 +173,12 @@ def main():
 
     lock_gather_info = Lock()
     lock_PID = Lock()
-    lock_final_data = Lock()
     lock_pub_info = Lock()
 
     proc_thread = ProcDataThread(lock_gather_info, lock_PID)
     ram_thread = MemDataThread(lock_gather_info, lock_PID)
-    proc_processor_thread = ShowProcDataThread(lock_gather_info, lock_final_data, lock_pub_info)
-    ram_processor_thread = ShowMemDataThread(lock_gather_info, lock_final_data, lock_pub_info)
+    proc_processor_thread = ShowProcDataThread(lock_gather_info, lock_pub_info)
+    ram_processor_thread = ShowMemDataThread(lock_gather_info, lock_pub_info)
 
     proc_thread.start()
     ram_thread.start()

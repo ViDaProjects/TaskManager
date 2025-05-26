@@ -93,13 +93,12 @@ class DataProcesser:
 
 
     def ram_processor(self):
-        
         if not self.lock_gather_info:
             return
 
         with self.lock_gather_info:
             ram_data = copy.deepcopy(data_classes.get_RAM_INFO())
-        
+
         if ram_data is None:
             return
 
@@ -132,6 +131,8 @@ class DataProcesser:
         pub = data_classes.ShowRamData(virtual_size_kb, data_stack_size_kb, real_size_share_kb, real_size_not_share_kb, dirty_percentage, swap_percentage)
 
         with self.lock_pub_info:
+            print("#######################################")
+            print(pub)
             data_classes.set_SHOW_RAM_DATA(copy.deepcopy(pub))
 
     def set_locks(self, lock_gather_info, lock_pub_info):
