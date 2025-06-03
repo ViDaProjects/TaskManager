@@ -383,7 +383,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.pushButton_4.setDefault(False)
-        self.stacked_pages.setCurrentIndex(1)
+        self.stacked_pages.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
