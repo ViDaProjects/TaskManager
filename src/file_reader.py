@@ -1,5 +1,8 @@
 import os
 import re
+import struct
+import time
+import fcntl
 
 PROC_DIR = "/proc"
 
@@ -29,6 +32,44 @@ def read_proc_file(pid, file)->list[str]:
             data = f.readlines()
 
     except IOError:
-        
+        return
+    return data
+
+EVENT_FORMAT = 'llHHI'
+EVENT_SIZE = struct.calcsize(EVENT_FORMAT)
+file = "/dev/input/event3"
+device = open(file, 'rb')
+
+# Set non-blocking mode
+fd = device.fileno()
+flags = fcntl.fcntl(fd, fcntl.F_GETFL)
+fcntl.fcntl(fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
+
+
+def read_binary_file(event_path):
+    count = 0
+    while True:
+        try:
+            data = device.read(EVENT_SIZE)
+            if not data or len(data) < EVENT_SIZE:
+                break  # No more data
+
+            tv_sec, tv_usec, ev_type, code, value = struct.unpack(EVENT_FORMAT, data)
+
+            if ev_type == 1:  # EV_KEY
+                #print(f"Key event - Code: {code}, Value: {value}")
+                count+=1
+
+        except BlockingIOError:
+            break  # No data left in the buffer
+
+    return count
+    
+def read_file(path:str) -> list[str]:
+    try:
+        with open(path, 'r') as f:
+            data = f.readlines()
+
+    except IOError:
         return
     return data
