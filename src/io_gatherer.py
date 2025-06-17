@@ -25,10 +25,9 @@ class IOMiner:
         return devices
     
     def read_keyboard_press(self, id):
+        '''Returns key_press count since last count'''
         dir = DEV_INPUT_DIR + "/event" + str(id)
-        time.sleep(1)
         count = file_reader.read_binary_file(dir)
-        
         print(count)
 
     def read_io_ports(self) -> tuple[list[str], list[str]]:
@@ -56,5 +55,11 @@ if __name__ == "__main__":
 
     print(keyboard_devices)
     keyboard_name, keyboard_id = keyboard_devices[0]
+    
+    
+    
+    
+    # Loop that should be called periodically to extract all data and update the buffer
     while True:
-        test.read_keyboard_press(keyboard_id)
+        key_count = test.read_keyboard_press(keyboard_id)
+        

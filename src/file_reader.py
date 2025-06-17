@@ -52,11 +52,11 @@ def read_binary_file(event_path):
         try:
             data = device.read(EVENT_SIZE)
             if not data or len(data) < EVENT_SIZE:
-                break  # No more data
+                break
 
             tv_sec, tv_usec, ev_type, code, value = struct.unpack(EVENT_FORMAT, data)
 
-            if ev_type == 1:  # EV_KEY
+            if ev_type == 1:# Event is a keypress (others include scroll, mouse, joystick)
                 #print(f"Key event - Code: {code}, Value: {value}")
                 count+=1
 
