@@ -32,3 +32,11 @@ def read_proc_file(pid, file)->list[str]:
         
         return
     return data
+
+def read_file(path)->list[str]:
+    try:
+        with open(path, 'r') as f:
+            data = f.readlines()
+    except IOError:
+        return
+    return data
