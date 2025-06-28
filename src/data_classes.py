@@ -150,4 +150,18 @@ class DiskInfo:
     duration_not_write: float
     in_flight: float
 
+@dataclass 
+class InternetInfo:
+    name: str
+    
+    in_bytes: float
+    in_packets: float
+    in_errs: float
+    in_drop: float
+
+    out_bytes: float
+    out_packets: float
+    out_errs: float
+    out_drop: float
+
 buffer = DataBuffers()

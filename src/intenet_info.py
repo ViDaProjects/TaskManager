@@ -1,32 +1,46 @@
 
 import os
+import file_reader
+import data_classes
 
-# ALL CODE HERE IS SHIT, DO NOT TRUST THE CODE, ONLY THE FILE NAMES LOL
+def get_net_info():
+    try:
+        data = []
+        with open("/proc/net/dev", 'r') as file:
+            file.readline()
+            file.readline()# Throwaway useless lines LOL
+            while True:
+                
+                line = file.readline()
+                
+                if not line:  # Check if the line is empty, indicating end of file
+                    break
 
-def get_default_interface():
-    with os.popen("ip route | grep default") as f:
-        for line in f:
-            parts = line.split()
-            if "dev" in parts:
-                return parts[parts.index("dev") + 1]
-    return None
+                line = line.strip()
+                name, _, line = line.partition(':')
+                numbers = file_reader.get_numbers_list(line)
+                
+                # Fill dataclass
 
-def get_interface_bytes(interface="eth0"):
-    with open("/proc/net/dev") as f:
-        for line in f:
-            if interface in line:
-                parts = line.split(f"{interface}:")[1].split()
-                rx_bytes = int(parts[0])
-                tx_bytes = int(parts[8])
-                return rx_bytes, tx_bytes
-    return None, None
+                if "lo" in name:
+                    name = "Local internet traffic"
+                elif "enp" in name:
+                    name = "Ethernet connection traffic"
+                elif "enx" in name:
+                    name = "Ethernet connection via USB adapter"
+                elif "wl" in name:
+                    name = "Wireless connection"
+                #print(name)
+                data.append(data_classes.InternetInfo(name, numbers[0], numbers[1], numbers[2], numbers[3], numbers[8], numbers[9], numbers[10], numbers[11]))
+            
+            return data
 
-iface = get_default_interface()
-print(f"Default interface: {iface}")
+    except FileNotFoundError:
+        print(f"Error: The file for internet was not found.")
+        return
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return
 
-rx, tx = get_interface_bytes(iface)
-
-if rx is None or tx is None:
-    print(f"Interface '{iface}' not found.")
-else:
-    print(f"Received: {rx / (1024**2):.2f} MB, Sent: {tx / (1024**2):.2f} MB")
+if __name__ == "__main__":
+    print(get_net_info())

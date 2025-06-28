@@ -21,8 +21,8 @@ class IOMiner:
             line = line.strip()
             ports.append(line[0:9])
             names.append(line[12:])
-            #print(line[0:9], end=" ")
-            #print(line[12:])
+            print(line[0:9], end=" ")
+            print(line[12:])
 
         return ports, names
 
