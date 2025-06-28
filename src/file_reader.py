@@ -73,3 +73,11 @@ def read_file(path:str) -> list[str]:
     except IOError:
         return
     return data
+
+def read_file(path)->list[str]:
+    try:
+        with open(path, 'r') as f:
+            data = f.readlines()
+    except IOError:
+        return
+    return data

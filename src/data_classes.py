@@ -140,4 +140,28 @@ class ShowRamData:
     dirty_percentage: float
     swap_percentage: float
 
+@dataclass
+class DiskInfo:
+    total_read: float
+    sectors_read: float
+    duration_not_read: float
+    total_write: float
+    total_write: float
+    duration_not_write: float
+    in_flight: float
+
+@dataclass 
+class InternetInfo:
+    name: str
+    
+    in_bytes: float
+    in_packets: float
+    in_errs: float
+    in_drop: float
+
+    out_bytes: float
+    out_packets: float
+    out_errs: float
+    out_drop: float
+
 buffer = DataBuffers()
