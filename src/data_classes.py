@@ -142,6 +142,11 @@ class ShowRamData:
 
 @dataclass
 class DiskInfo:
+    name: str
+    vendor: str
+
+    partitions: list # List contains (partition_name, filetype, partition_size, mount_location)
+
     total_read: float
     sectors_read: float
     duration_not_read: float
@@ -150,10 +155,13 @@ class DiskInfo:
     duration_not_write: float
     in_flight: float
 
+    used: float
+    total_size: float
+
 @dataclass 
 class InternetInfo:
     name: str
-    
+    # Blocks for in and out info
     in_bytes: float
     in_packets: float
     in_errs: float

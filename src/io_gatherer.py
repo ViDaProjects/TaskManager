@@ -61,5 +61,7 @@ if __name__ == "__main__":
     
     # Loop that should be called periodically to extract all data and update the buffer
     while True:
+        
         key_count = test.read_keyboard_press(keyboard_id)
+        time.sleep(2)
         

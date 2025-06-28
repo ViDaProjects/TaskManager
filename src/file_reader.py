@@ -6,6 +6,23 @@ import fcntl
 
 PROC_DIR = "/proc"
 
+def get_disk_usage(mount_point):
+    stat = os.statvfs(mount_point)
+    total = stat.f_frsize * stat.f_blocks
+    free = stat.f_frsize * stat.f_bfree
+    used = total - free
+    return used
+
+def read_disk_mount_point():
+    mount_map = {}
+    with open('/proc/mounts', 'r') as f:
+        for line in f:
+            parts = line.split()
+            device = parts[0].removeprefix('/dev/')
+            mount_point = parts[1]
+            mount_map[device] = mount_point
+        return mount_map
+
 def read_proc_data(file):
 
     path = os.path.join(PROC_DIR, file)
@@ -45,6 +62,16 @@ fd = device.fileno()
 flags = fcntl.fcntl(fd, fcntl.F_GETFL)
 fcntl.fcntl(fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
+def get_mounted_fs_info():
+    fs_info = []
+    with open("/proc/mounts", "r") as f:
+        for line in f:
+            parts = line.split()
+            dev = os.path.basename(parts[0])
+            fstype = parts[0], parts[2]
+            fs_info.append(fstype)
+            #print(fstype)
+    return fs_info
 
 def read_binary_file(event_path):
     count = 0
