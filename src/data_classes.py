@@ -5,6 +5,8 @@ class IO_DataBuffers:
     def __init__(self):
         self.IORawData = None
         self.ShowIOData = None
+        self.file_data = None
+        self.file_path = "/"
 
 def set_io_raw(data):
     io_data_buffers.IORawData = data
@@ -17,6 +19,18 @@ def set_show_io_data(data):
 
 def get_show_io_data():
     return io_data_buffers.ShowIOData
+
+def set_file_data(data):
+    io_data_buffers.file_data = data
+
+def get_file_data():
+    return io_data_buffers.file_data
+
+def set_file_path(data):
+    io_data_buffers.file_path = data
+
+def get_file_path():
+    return io_data_buffers.file_path
 
 io_data_buffers = IO_DataBuffers()
 
@@ -245,5 +259,20 @@ class GatherDataPub: # As listas aqui podem mudar de tamanho a qualquer momento,
 class ShowIOData:
     show_disc_info: list[ShowDiscInfo]
     show_net_info: list[ShowInternetInfo]
+
+@dataclass
+class File:
+    name: str
+    permissions: str
+    size: float
+    block_count: float # Number of 512 bit blocks allocated for it
+    time_since_acess: float
+    time_since_modified: float
+    owner: str
+# name, permissions, size, block_count, time_since_access, time_since_modified, owner
+@dataclass
+class FileInfo:
+    files: list[File]
+    folders: list[File]
 
 buffer = DataBuffers()

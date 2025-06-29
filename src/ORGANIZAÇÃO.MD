@@ -1,0 +1,2 @@
+- Começar com a explorador de arquivos
+- Depois ir para infos de semáforos, mutexes, etc
