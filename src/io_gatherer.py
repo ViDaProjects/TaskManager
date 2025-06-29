@@ -5,6 +5,7 @@ import file_reader
 import data_classes
 import copy
 from disk_info import DiskGather
+from internet_info import NetGather
 
 IO_DIR = "ioports"
 SYS_CLASS_INPUT_DIR = "/sys/class/input"
@@ -72,6 +73,7 @@ def keyboard_kinda_broken():
         time.sleep(2)
 
 disk_gatherer = DiskGather()
+net_gatherer = NetGather()
 
 class PublisherIOData:
 
@@ -79,14 +81,14 @@ class PublisherIOData:
         self.pub_info_lock = pub_info_lock
 
     def gather_io_data(self):
+        
         disk_info = disk_gatherer.get_disk_info()
+        net_info = net_gatherer.get_net_info()
 
-        pub_data = data_classes.GatherDataPub(0, disk_info)
+        pub_data = data_classes.GatherDataPub(net_info, disk_info)
 
         with self.pub_info_lock:
             data_classes.set_io_raw(copy.deepcopy(pub_data))
-            # AQUI PÚBLICA OS DADOS
-
 
 if __name__ == "__main__":
     a = PublisherIOData(1)

@@ -221,12 +221,31 @@ class InternetInfo:
     out_drop: float
 
 @dataclass
-class GatherDataPub:
-    internet_info: InternetInfo
-    disk_info: DiskInfo
+class ShowInternetInfo:
+    name: str
+    
+    in_speed: float
+    in_packet_speed: float
+    in_err_rate: float
+    in_drop_rate: float
+    in_avg_packet_size: float
+
+    out_speed: float
+    out_packet_speed: float
+    out_err_rate: float
+    out_drop_rate: float
+    out_avg_packet_size: float
+
+    
+
+@dataclass
+class GatherDataPub: # As listas aqui podem mudar de tamanho a qualquer momento, CUIDADO
+    internet_info: list[InternetInfo]
+    disk_info: list[DiskInfo]
 
 @dataclass 
 class ShowIOData:
     show_disc_info: list[ShowDiscInfo]
+    show_net_info: list[ShowInternetInfo]
 
 buffer = DataBuffers()

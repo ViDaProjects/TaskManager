@@ -2,7 +2,7 @@ import data_classes
 import copy
 import time
 
-def process_disk(data: data_classes.DiskInfo, old_data: data_classes.DiskInfo):
+def process_disk(data: list[data_classes.DiskInfo], old_data: list[data_classes.DiskInfo]):
     if len(data) != len(old_data):
         return
     pub_data = []
@@ -35,6 +35,34 @@ def process_disk(data: data_classes.DiskInfo, old_data: data_classes.DiskInfo):
     #print(pub_data)
     return pub_data
 
+def process_net(data: list[data_classes.InternetInfo], old_data: list[data_classes.InternetInfo]):
+    if len(data) != len(old_data):
+        return
+    
+    pub_data = []
+
+    for i in range(len(data)):
+        processed_device = data_classes.ShowInternetInfo(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        
+        processed_device.name = data[i].name
+
+        processed_device.in_speed = (data[i].in_bytes - old_data[i].in_bytes) / 2
+        processed_device.in_packet_speed = (data[i].in_packets - old_data[i].in_packets) / 2
+        processed_device.in_avg_packet_size = processed_device.in_speed - processed_device.in_packet_speed
+        processed_device.in_err_rate = (data[i].in_errs - old_data[i].in_errs) / 2
+        processed_device.in_drop_rate = (data[i].in_drop - old_data[i].in_drop) / 2
+
+        processed_device.out_speed = (data[i].out_bytes - old_data[i].out_bytes) / 2
+        processed_device.out_packet_speed = (data[i].out_packets - old_data[i].out_packets) / 2
+        processed_device.out_avg_packet_size = processed_device.out_speed - processed_device.out_packet_speed
+        processed_device.out_err_rate = (data[i].out_errs - old_data[i].out_errs) / 2
+        processed_device.out_drop_rate = (data[i].out_drop - old_data[i].out_drop) / 2
+        
+        pub_data.append(processed_device)
+
+    #print(pub_data)
+    return pub_data
+
 class ProcessIOData:
 
     def __init__(self, sub_info_lock, pub_info_lock):
@@ -48,10 +76,7 @@ class ProcessIOData:
         
         if not io_old:
             time.sleep(0.1)
-            return
-        #print(io_old)
-        #io_old = io_old[0]
-        
+            return        
 
         time.sleep(0.5)
 
@@ -60,9 +85,10 @@ class ProcessIOData:
             # AQUI LÊ OS DADOS
         
         processed_disk = process_disk(io_raw.disk_info, io_old.disk_info)
+        processed_net = process_net(io_raw.internet_info, io_old.internet_info)
 
-        processed_io = data_classes.ShowIOData(processed_disk)
-
+        processed_io = data_classes.ShowIOData(processed_disk, processed_net)
+        print(processed_io)
         with self.pub_info_lock:
             data_classes.set_show_io_data(copy.deepcopy(processed_io))
 
