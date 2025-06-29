@@ -1,6 +1,25 @@
 
 from dataclasses import dataclass
 
+class IO_DataBuffers:
+    def __init__(self):
+        self.IORawData = None
+        self.ShowIOData = None
+
+def set_io_raw(data):
+    io_data_buffers.IORawData = data
+
+def get_io_raw():
+    return io_data_buffers.IORawData
+
+def set_show_io_data(data):
+    io_data_buffers.ShowIOData = data
+
+def get_show_io_data():
+    return io_data_buffers.ShowIOData
+
+io_data_buffers = IO_DataBuffers()
+
 class DataBuffers:
 
     def __init__(self):
@@ -158,12 +177,34 @@ class DiskInfo:
     sectors_read: float
     duration_not_read: float
     total_write: float
-    total_write: float
+    sectors_write: float
     duration_not_write: float
     in_flight: float
 
     used: float
     total_size: float
+
+@dataclass
+class ShowPartitionInfo:
+    name: str
+    mount_point: str
+    used: float
+    size: float
+    used_percentage: float
+
+@dataclass 
+class ShowDiscInfo:
+    model: str
+    vendor: str
+
+    partitions: list[ShowPartitionInfo]
+    read_speed: float
+    sectors_read_speed: float
+    time_waiting_read: float
+    write_speed: float
+    sectors_write_speed: float
+    time_waiting_write: float
+    uncompleted_requests: float
 
 @dataclass 
 class InternetInfo:
@@ -178,5 +219,14 @@ class InternetInfo:
     out_packets: float
     out_errs: float
     out_drop: float
+
+@dataclass
+class GatherDataPub:
+    internet_info: InternetInfo
+    disk_info: DiskInfo
+
+@dataclass 
+class ShowIOData:
+    show_disc_info: ShowDiscInfo
 
 buffer = DataBuffers()

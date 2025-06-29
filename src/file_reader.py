@@ -52,16 +52,6 @@ def read_proc_file(pid, file)->list[str]:
         return
     return data
 
-EVENT_FORMAT = 'llHHI'
-EVENT_SIZE = struct.calcsize(EVENT_FORMAT)
-file = "/dev/input/event3"
-device = open(file, 'rb')
-
-# Set non-blocking mode
-fd = device.fileno()
-flags = fcntl.fcntl(fd, fcntl.F_GETFL)
-fcntl.fcntl(fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
-
 def get_mounted_fs_info():
     fs_info = []
     with open("/proc/mounts", "r") as f:
@@ -73,7 +63,19 @@ def get_mounted_fs_info():
             #print(fstype)
     return fs_info
 
-def read_binary_file(event_path):
+file = "/dev/input/event3"
+device = open(file, 'rb')
+
+# Set non-blocking mode
+fd = device.fileno()
+flags = fcntl.fcntl(fd, fcntl.F_GETFL)
+fcntl.fcntl(fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
+
+EVENT_FORMAT = 'llHHI'
+EVENT_SIZE = struct.calcsize(EVENT_FORMAT)
+
+def read_binary_file(path):
+    
     count = 0
     while True:
         try:
