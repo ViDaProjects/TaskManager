@@ -4,7 +4,7 @@ import copy
 
 class PublisherFileData:
 
-    def __init__(self, pub_info_lock, sub_info_lock):
+    def __init__(self, sub_info_lock, pub_info_lock):
         self.pub_info_lock = pub_info_lock
         self.sub_info_lock = sub_info_lock
         self.path = "/"#home/laser/Documents/TaskManager/src/"
