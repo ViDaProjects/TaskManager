@@ -151,3 +151,28 @@ class DiskInfo:
     in_flight: float
 
 buffer = DataBuffers()
+
+@dataclass
+class ShowPartitionInfo:
+    name: str
+    mount_point: str
+    used: float
+    size: float
+    used_percentage: float
+
+@dataclass
+class ShowDiscInfo:
+    model: str
+    vendor: str
+    partitions: list[ShowPartitionInfo]
+    read_speed: float
+    sectors_read_speed: float
+    time_waiting_read: float
+    write_speed: float
+    sectors_write_speed: float
+    time_waiting_write: float
+    uncompleted_requests: float
+
+@dataclass
+class ShowIOData:
+    show_disc_info: list[ShowDiscInfo] #A lista pode vir None quando um pen drive é desconectado, por exemplo

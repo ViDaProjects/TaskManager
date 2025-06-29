@@ -13,6 +13,8 @@
         "src/process_data.py",
         "src/qthread_gatherer.py",
         "gui/ProcessDialog.py",
-        "gui/ui_process_dialog.py"
+        "gui/ui_process_dialog.py",
+        "gui/PartitionGraph.py",
+        "gui/file_explorer_test.py"
     ]
 }

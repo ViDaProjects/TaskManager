@@ -14,9 +14,11 @@ from threading import Lock
 from gui.ui_form import Ui_MainWindow
 from src.data_classes import ShowProcessData, ShowSystemData
 from gui.graph_page import GraphPage
+from gui.PartitionGraph import PartitionGraph
 from src.qthread_gatherer import ProcDataThread, MemDataThread, ShowMemDataThread, ShowProcDataThread
 from gui.ProcessDialog import ProcessDialog
 import src.data_classes
+from src.data_classes import ShowDiscInfo, ShowIOData, ShowPartitionInfo
 
 proc_thread = None
 ram_thread = None
@@ -26,6 +28,61 @@ lock_gather_info = None
 PROCESSES_PAGE_INDEX = 0
 MEMORY_USE_PAGE_INDEX = 1
 CPU_USE_PAGE_INDEX = 2
+PARTITIONS_PAGE_INDEX = 3
+FILE_EXPLORER_PAGE_INDEX = 4
+USAGE_PER_PROCESS_PAGE_INDEX = 5
+
+io_data_exemplo = ShowIOData(
+    show_disc_info=[
+        ShowDiscInfo(
+            model="Samsung SSD 870 EVO",
+            vendor="Samsung",
+            partitions=[
+                ShowPartitionInfo(
+                    name="/dev/sda1",
+                    mount_point="/",
+                    used=20480,
+                    size=51200,
+                    used_percentage=40.0
+                ),
+                ShowPartitionInfo(
+                    name="/dev/sda2",
+                    mount_point="/home",
+                    used=10240,
+                    size=25600,
+                    used_percentage=40.0
+                ),
+            ],
+            read_speed=150.0,
+            sectors_read_speed=3000.0,
+            time_waiting_read=0.5,
+            write_speed=120.0,
+            sectors_write_speed=2500.0,
+            time_waiting_write=0.4,
+            uncompleted_requests=2.0
+        ),
+        ShowDiscInfo(
+            model="WD Blue 1TB",
+            vendor="Western Digital",
+            partitions=[
+                ShowPartitionInfo(
+                    name="/dev/sdb1",
+                    mount_point="/media/data",
+                    used=500000,
+                    size=1000000,
+                    used_percentage=50.0
+                ),
+            ],
+            read_speed=100.0,
+            sectors_read_speed=2000.0,
+            time_waiting_read=1.2,
+            write_speed=80.0,
+            sectors_write_speed=1800.0,
+            time_waiting_write=1.0,
+            uncompleted_requests=0.0
+        )
+    ]
+)
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -60,6 +117,11 @@ class MainWindow(QMainWindow):
         self.ui.cpu_graph_frame.layout().addWidget(self.cpu_graph)
         self.ui.mem_graph_frame.layout().addWidget(self.memory_graph)
 
+        #Partitions page
+        self.partition_graph = PartitionGraph()
+        #self.ui.partitions_frame.setLayout(QVBoxLayout())
+        self.ui.partitions_frame.layout().addWidget(self.partition_graph)
+
         #Timer
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_stack_pages)
@@ -70,8 +132,12 @@ class MainWindow(QMainWindow):
         self.ui.processes_button.clicked.connect(lambda: self.change_current_stack_page(PROCESSES_PAGE_INDEX))
         self.ui.cpu_usage_button.clicked.connect(lambda: self.change_current_stack_page(CPU_USE_PAGE_INDEX))
         self.ui.memory_usage_button.clicked.connect(lambda: self.change_current_stack_page(MEMORY_USE_PAGE_INDEX))
+        self.ui.partitions_button.clicked.connect(lambda: self.change_current_stack_page(PARTITIONS_PAGE_INDEX))
+        self.ui.file_explorer_button.clicked.connect(lambda: self.change_current_stack_page(FILE_EXPLORER_PAGE_INDEX))
+        self.ui.usage_per_process_button.clicked.connect(lambda: self.change_current_stack_page(USAGE_PER_PROCESS_PAGE_INDEX))
         self.ui.process_table.cellDoubleClicked.connect(self.open_process_info)
 
+#Mudar a lógica pra não alterar os dados do dialog quando a pag atualiza
     def open_process_info(self, row):
         if 0 <= row < len(self.show_process_list):
             process = self.show_process_list[row]
@@ -125,6 +191,7 @@ class MainWindow(QMainWindow):
         #Update graphs
         self.cpu_graph.update_graph([self.all_system_data.cpu_usage])
         self.memory_graph.update_graph([self.all_system_data.mem_used_percent, self.all_system_data.swap_used_percent])
+        self.partition_graph.update_graph(io_data_exemplo.show_disc_info)
 
         #Update processes table
         self.fill_process_table(self.all_system_data.process)

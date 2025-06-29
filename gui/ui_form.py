@@ -68,6 +68,11 @@ class Ui_MainWindow(object):
         self.menu_options_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.menu_options_frame)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.label_8 = QLabel(self.menu_options_frame)
+        self.label_8.setObjectName(u"label_8")
+
+        self.verticalLayout_2.addWidget(self.label_8, 0, Qt.AlignmentFlag.AlignHCenter)
+
         self.processes_button = QPushButton(self.menu_options_frame)
         self.processes_button.setObjectName(u"processes_button")
         self.processes_button.setMouseTracking(False)
@@ -99,6 +104,42 @@ class Ui_MainWindow(object):
         self.memory_usage_button.setFlat(False)
 
         self.verticalLayout_2.addWidget(self.memory_usage_button)
+
+        self.line_3 = QFrame(self.menu_options_frame)
+        self.line_3.setObjectName(u"line_3")
+        self.line_3.setFrameShape(QFrame.Shape.HLine)
+        self.line_3.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout_2.addWidget(self.line_3)
+
+        self.label_12 = QLabel(self.menu_options_frame)
+        self.label_12.setObjectName(u"label_12")
+
+        self.verticalLayout_2.addWidget(self.label_12, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.partitions_button = QPushButton(self.menu_options_frame)
+        self.partitions_button.setObjectName(u"partitions_button")
+        icon3 = QIcon()
+        icon3.addFile(u"icons/grid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.partitions_button.setIcon(icon3)
+
+        self.verticalLayout_2.addWidget(self.partitions_button)
+
+        self.file_explorer_button = QPushButton(self.menu_options_frame)
+        self.file_explorer_button.setObjectName(u"file_explorer_button")
+        icon4 = QIcon()
+        icon4.addFile(u"icons/archive.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.file_explorer_button.setIcon(icon4)
+
+        self.verticalLayout_2.addWidget(self.file_explorer_button)
+
+        self.usage_per_process_button = QPushButton(self.menu_options_frame)
+        self.usage_per_process_button.setObjectName(u"usage_per_process_button")
+        icon5 = QIcon()
+        icon5.addFile(u"icons/sliders.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.usage_per_process_button.setIcon(icon5)
+
+        self.verticalLayout_2.addWidget(self.usage_per_process_button)
 
         self.verticalSpacer = QSpacerItem(20, 349, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -133,9 +174,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setContentsMargins(0, -1, 0, -1)
         self.pushButton_4 = QPushButton(self.frame_8)
         self.pushButton_4.setObjectName(u"pushButton_4")
-        icon3 = QIcon()
-        icon3.addFile(u"icons/align-center.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.pushButton_4.setIcon(icon3)
+        icon6 = QIcon()
+        icon6.addFile(u"icons/menu.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.pushButton_4.setIcon(icon6)
         self.pushButton_4.setIconSize(QSize(20, 20))
         self.pushButton_4.setFlat(True)
 
@@ -369,6 +410,153 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.addWidget(self.cpu_graph_frame)
 
         self.stacked_pages.addWidget(self.cpu_use_page)
+        self.partitions_page = QWidget()
+        self.partitions_page.setObjectName(u"partitions_page")
+        self.verticalLayout_13 = QVBoxLayout(self.partitions_page)
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.frame_4 = QFrame(self.partitions_page)
+        self.frame_4.setObjectName(u"frame_4")
+        self.frame_4.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame_4.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_19 = QVBoxLayout(self.frame_4)
+        self.verticalLayout_19.setObjectName(u"verticalLayout_19")
+        self.verticalLayout_19.setContentsMargins(0, 0, 0, 0)
+        self.label_14 = QLabel(self.frame_4)
+        self.label_14.setObjectName(u"label_14")
+
+        self.verticalLayout_19.addWidget(self.label_14, 0, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
+
+
+        self.verticalLayout_13.addWidget(self.frame_4, 0, Qt.AlignmentFlag.AlignTop)
+
+        self.partitions_frame_organizer = QFrame(self.partitions_page)
+        self.partitions_frame_organizer.setObjectName(u"partitions_frame_organizer")
+        self.partitions_frame_organizer.setFrameShape(QFrame.Shape.NoFrame)
+        self.partitions_frame_organizer.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_18 = QVBoxLayout(self.partitions_frame_organizer)
+        self.verticalLayout_18.setObjectName(u"verticalLayout_18")
+        self.partitions_frame = QFrame(self.partitions_frame_organizer)
+        self.partitions_frame.setObjectName(u"partitions_frame")
+        self.partitions_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.partitions_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_20 = QVBoxLayout(self.partitions_frame)
+        self.verticalLayout_20.setObjectName(u"verticalLayout_20")
+        self.verticalLayout_20.setContentsMargins(0, 0, 0, 0)
+
+        self.verticalLayout_18.addWidget(self.partitions_frame)
+
+        self.spacer_frame = QFrame(self.partitions_frame_organizer)
+        self.spacer_frame.setObjectName(u"spacer_frame")
+        self.spacer_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.verticalLayout_21 = QVBoxLayout(self.spacer_frame)
+        self.verticalLayout_21.setObjectName(u"verticalLayout_21")
+        self.verticalLayout_21.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_21.addItem(self.verticalSpacer_2)
+
+
+        self.verticalLayout_18.addWidget(self.spacer_frame)
+
+
+        self.verticalLayout_13.addWidget(self.partitions_frame_organizer)
+
+        self.stacked_pages.addWidget(self.partitions_page)
+        self.file_explorer_page = QWidget()
+        self.file_explorer_page.setObjectName(u"file_explorer_page")
+        self.verticalLayout_14 = QVBoxLayout(self.file_explorer_page)
+        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
+        self.frame_12 = QFrame(self.file_explorer_page)
+        self.frame_12.setObjectName(u"frame_12")
+        self.frame_12.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame_12.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_10 = QHBoxLayout(self.frame_12)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.label_15 = QLabel(self.frame_12)
+        self.label_15.setObjectName(u"label_15")
+
+        self.horizontalLayout_10.addWidget(self.label_15, 0, Qt.AlignmentFlag.AlignHCenter)
+
+
+        self.verticalLayout_14.addWidget(self.frame_12, 0, Qt.AlignmentFlag.AlignTop)
+
+        self.frame_14 = QFrame(self.file_explorer_page)
+        self.frame_14.setObjectName(u"frame_14")
+        self.frame_14.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_14.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_17 = QVBoxLayout(self.frame_14)
+        self.verticalLayout_17.setObjectName(u"verticalLayout_17")
+        self.file_explorer_frame = QFrame(self.frame_14)
+        self.file_explorer_frame.setObjectName(u"file_explorer_frame")
+        self.file_explorer_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.file_explorer_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_22 = QVBoxLayout(self.file_explorer_frame)
+        self.verticalLayout_22.setObjectName(u"verticalLayout_22")
+        self.verticalLayout_22.setContentsMargins(0, 0, 0, 0)
+        self.label_18 = QLabel(self.file_explorer_frame)
+        self.label_18.setObjectName(u"label_18")
+
+        self.verticalLayout_22.addWidget(self.label_18)
+
+
+        self.verticalLayout_17.addWidget(self.file_explorer_frame)
+
+        self.file_spacer_frame = QFrame(self.frame_14)
+        self.file_spacer_frame.setObjectName(u"file_spacer_frame")
+        self.file_spacer_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.file_spacer_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_23 = QVBoxLayout(self.file_spacer_frame)
+        self.verticalLayout_23.setObjectName(u"verticalLayout_23")
+        self.verticalLayout_23.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_3 = QSpacerItem(20, 405, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_23.addItem(self.verticalSpacer_3)
+
+
+        self.verticalLayout_17.addWidget(self.file_spacer_frame)
+
+
+        self.verticalLayout_14.addWidget(self.frame_14)
+
+        self.stacked_pages.addWidget(self.file_explorer_page)
+        self.usage_per_process_page = QWidget()
+        self.usage_per_process_page.setObjectName(u"usage_per_process_page")
+        self.verticalLayout_15 = QVBoxLayout(self.usage_per_process_page)
+        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
+        self.frame_16 = QFrame(self.usage_per_process_page)
+        self.frame_16.setObjectName(u"frame_16")
+        self.frame_16.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame_16.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_11 = QHBoxLayout(self.frame_16)
+        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
+        self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
+        self.label_16 = QLabel(self.frame_16)
+        self.label_16.setObjectName(u"label_16")
+
+        self.horizontalLayout_11.addWidget(self.label_16, 0, Qt.AlignmentFlag.AlignHCenter)
+
+
+        self.verticalLayout_15.addWidget(self.frame_16, 0, Qt.AlignmentFlag.AlignTop)
+
+        self.frame_17 = QFrame(self.usage_per_process_page)
+        self.frame_17.setObjectName(u"frame_17")
+        self.frame_17.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_17.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_16 = QVBoxLayout(self.frame_17)
+        self.verticalLayout_16.setObjectName(u"verticalLayout_16")
+        self.verticalLayout_16.setContentsMargins(0, 0, 0, 0)
+        self.usage_per_proc_table = QTableWidget(self.frame_17)
+        self.usage_per_proc_table.setObjectName(u"usage_per_proc_table")
+        self.usage_per_proc_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.usage_per_proc_table.setGridStyle(Qt.PenStyle.DashLine)
+
+        self.verticalLayout_16.addWidget(self.usage_per_proc_table)
+
+
+        self.verticalLayout_15.addWidget(self.frame_17)
+
+        self.stacked_pages.addWidget(self.usage_per_process_page)
 
         self.verticalLayout_4.addWidget(self.stacked_pages)
 
@@ -383,7 +571,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.pushButton_4.setDefault(False)
-        self.stacked_pages.setCurrentIndex(0)
+        self.stacked_pages.setCurrentIndex(4)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -393,9 +581,14 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label_7.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"TASK MANAGER", None))
+        self.label_8.setText(QCoreApplication.translate("MainWindow", u"System Monitor", None))
         self.processes_button.setText(QCoreApplication.translate("MainWindow", u"Processes", None))
         self.cpu_usage_button.setText(QCoreApplication.translate("MainWindow", u"CPU usage", None))
         self.memory_usage_button.setText(QCoreApplication.translate("MainWindow", u"Memory usage", None))
+        self.label_12.setText(QCoreApplication.translate("MainWindow", u"File System", None))
+        self.partitions_button.setText(QCoreApplication.translate("MainWindow", u"Partitions", None))
+        self.file_explorer_button.setText(QCoreApplication.translate("MainWindow", u"File explorer", None))
+        self.usage_per_process_button.setText(QCoreApplication.translate("MainWindow", u"Usage per process", None))
         self.pushButton_4.setText("")
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Menu", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"DASHBOARD", None))
@@ -410,5 +603,9 @@ class Ui_MainWindow(object):
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Swap:", None))
         self.total_swap_label.setText(QCoreApplication.translate("MainWindow", u"0/0 MB", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"CPU usage", None))
+        self.label_14.setText(QCoreApplication.translate("MainWindow", u"Partitions", None))
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"File manager", None))
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Marca\u00e7\u00e3o", None))
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Usage per process", None))
     # retranslateUi
 
