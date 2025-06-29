@@ -141,11 +141,18 @@ class ShowRamData:
     swap_percentage: float
 
 @dataclass
-class DiskInfo:
+class PartitionInfo:
     name: str
+    mount_point: str
+    used: float
+    size: float
+
+@dataclass
+class DiskInfo:
+    model: str
     vendor: str
 
-    partitions: list # List contains (partition_name, filetype, partition_size, mount_location)
+    partitions: list[PartitionInfo] # List contains (partition_name, filetype, partition_size, mount_location)
 
     total_read: float
     sectors_read: float

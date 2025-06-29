@@ -11,74 +11,34 @@ def get_partition_size_bytes(disk, part):
     except FileNotFoundError:
         return None
 
-def disk_total_read(disk_path):
-    #print(disk_path + "/stat")
-    stat = file_reader.read_file(disk_path + "/stat")
-    stat = file_reader.get_numbers_list(stat[0])
-    
-    data = data_classes.DiskInfo(0, 0, 0, 0, 0, 0)
-
-    data.total_read = stat[0] # Amount of data read (how many requests)
-    data.sectors_read = stat[2]# Number of 512b segments read
-    data.duration_not_read = stat[3]# Time where it didn't read because disk was busy
-    data.total_write = stat[4]
-    data.total_write = stat[6]
-    data.duration_not_write = stat[7]
-    data.in_flight = stat[8] # Number of active read/write operations, When copying multiple files it can act weird and not register
-
-    return data
-
-def get_disk_list():
+def get_disk_info():
     data = []
     for disk in os.listdir("/sys/block"):
-        
+
+        disk_data = data_classes.DiskInfo(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
         # Some files with some info
         dev_path = f"/sys/block/{disk}"
+
+        #disk_total_read(dev_path)
+        stat = file_reader.read_file(dev_path + "/stat")
+        stat = file_reader.get_numbers_list(stat[0])
+
+        disk_data.total_read = stat[0] # Amount of data read (how many requests)
+        disk_data.sectors_read = stat[2]# Number of 512b segments read
+        disk_data.duration_not_read = stat[3]# Time where it didn't read because disk was busy
+        disk_data.total_write = stat[4]
+        disk_data.total_write = stat[6]
+        disk_data.duration_not_write = stat[7]
+        disk_data.in_flight = stat[8] # Number of active read/write operations, When copying multiple files it can act weird and not register
+
+
         device_path = os.path.join(dev_path, "device")
         model_path = os.path.join(device_path, "model")
         vendor_path = os.path.join(device_path, "vendor")
 
         model = vendor = None
 
-        # Getting partition data, mountpoint, names, etc
-        partitions = [
-            entry for entry in os.listdir(dev_path)
-            if entry.startswith(disk) and os.path.exists(os.path.join(dev_path, entry))
-        ]
-        for i in range(len(partitions)):
-            partitions[i] = partitions[i], get_partition_size_bytes(disk, partitions[i])
-        
-        # Gets partition filetype info and mound location for all file shenanigans
-        partition_types = file_reader.get_mounted_fs_info()
-
-        # INNER JOIN THE PARTITION NAME, SIZE AND FILETYPE, THIS IS NOT READABLE CODE
-        partition_types_dict = {
-            dev.removeprefix('/dev/'): fstype
-            for dev, fstype in partition_types
-            if dev.startswith('/dev/')
-        }
-
-        partitions_dict = dict(partitions)
-
-        partitions = [
-            (dev, partition_types_dict[dev], partitions_dict[dev])
-            for dev in partition_types_dict
-            if dev in partitions_dict
-        ]
-
-        mount_points = file_reader.read_disk_mount_point()
-        
-        # Shennagigans to allow adding the mounting points to the tuple
-        old_partitions = partitions.copy()
-        partitions = []
-        for partition in old_partitions:
-            partitions.append(partition + (mount_points[partition[0]],))
-
-        used = 0
-        for partition in partitions:
-            used += file_reader.get_disk_usage(partition[3])
-
-        # Try to get model name for sda and usb devices, does not work for nvme
         try:
             with open(model_path) as f:
                 model = f.read().strip()
@@ -108,17 +68,40 @@ def get_disk_list():
                     vendor = f.read().strip()
             except FileNotFoundError:
                 pass
+        
+        disk_data.model = model
+        disk_data.vendor = vendor
 
-        # Add disk info to return USE DATACLASS
-        if model or vendor:
-            data.append((model or "unknown", vendor or "unknown", "/dev/" + disk, dev_path, partitions))
+        # Getting partition data, mountpoint, names, etc
+        partitions = [
+            [entry] for entry in os.listdir(dev_path)
+            if entry.startswith(disk) and os.path.exists(os.path.join(dev_path, entry))
+        ]
+        if not partitions:
+            continue
+        for i in range(len(partitions)):
+            partitions[i].append(get_partition_size_bytes(disk, partitions[i][0]))
 
+        
+        mount_points = file_reader.read_disk_mount_point()
+        
+        # Shennagigans to allow adding the mounting points to the tuple
+
+        partition_data = []
+        for partition in partitions:
+            partition_usage = file_reader.get_disk_usage(mount_points[partition[0]])
+            partition.append(mount_points[partition[0]])
+            print(data_classes.PartitionInfo(partition[0], partition[2], partition_usage, partition[1]))
+            partition_data.append(data_classes.PartitionInfo(partition[0], partition[2], partition_usage, partition[1]))
+
+        disk_data.partitions = partition_data.copy()
+        data.append(disk_data)
     return data
 
 if __name__ == "__main__":
-    data = get_disk_list()
-    
-    for disk in data:
-        print(disk)
-        data = disk_total_read(disk[3])
-        print(data)
+    data = get_disk_info()
+    print(data)
+    #for disk in data:
+    #    print(disk)
+    #    data = disk_total_read(disk[3])
+    #    print(data)
