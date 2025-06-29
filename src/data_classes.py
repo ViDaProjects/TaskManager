@@ -236,8 +236,6 @@ class ShowInternetInfo:
     out_drop_rate: float
     out_avg_packet_size: float
 
-    
-
 @dataclass
 class GatherDataPub: # As listas aqui podem mudar de tamanho a qualquer momento, CUIDADO
     internet_info: list[InternetInfo]

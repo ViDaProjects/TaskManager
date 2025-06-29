@@ -88,7 +88,8 @@ class ProcessIOData:
         processed_net = process_net(io_raw.internet_info, io_old.internet_info)
 
         processed_io = data_classes.ShowIOData(processed_disk, processed_net)
-        print(processed_io)
+        
+        #print(processed_io)
         with self.pub_info_lock:
             data_classes.set_show_io_data(copy.deepcopy(processed_io))
 
