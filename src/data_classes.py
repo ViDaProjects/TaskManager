@@ -227,6 +227,6 @@ class GatherDataPub:
 
 @dataclass 
 class ShowIOData:
-    show_disc_info: ShowDiscInfo
+    show_disc_info: list[ShowDiscInfo]
 
 buffer = DataBuffers()

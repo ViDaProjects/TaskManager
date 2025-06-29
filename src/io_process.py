@@ -3,31 +3,37 @@ import copy
 import time
 
 def process_disk(data: data_classes.DiskInfo, old_data: data_classes.DiskInfo):
-    
-    data = data[0]
-    old_data = old_data[0]
+    if len(data) != len(old_data):
+        return
+    pub_data = []
+    for i in range(len(data)):
+        data = data[i]
+        old_data = old_data[i]
 
-    processed_disk = data_classes.ShowDiscInfo(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-    processed_disk.model = data.model
-    processed_disk.vendor = data.vendor
+        processed_disk = data_classes.ShowDiscInfo(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        processed_disk.model = data.model
+        processed_disk.vendor = data.vendor
 
-    processed_disk.partitions = []
+        processed_disk.partitions = []
 
-    for partition in data.partitions:
-        processed_disk.partitions.append(data_classes.ShowPartitionInfo(partition.name, partition.mount_point, partition.used, partition.size, partition.used / partition.size))
+        for partition in data.partitions:
+            processed_disk.partitions.append(data_classes.ShowPartitionInfo(partition.name, partition.mount_point, partition.used, partition.size, partition.used / partition.size))
 
-    processed_disk.read_speed = (data.total_read - old_data.total_read) / 2
-    processed_disk.sectors_read_speed = (data.sectors_read - old_data.sectors_read) / 2
-    processed_disk.time_waiting_read = (data.duration_not_read - old_data.duration_not_read) / 2
-    
-    processed_disk.write_speed = (data.total_write - old_data.total_write) / 2
-    processed_disk.sectors_write_speed = (data.sectors_write - old_data.sectors_write) / 2
-    processed_disk.time_waiting_write = (data.duration_not_write - old_data.duration_not_write) / 2
+        processed_disk.read_speed = (data.total_read - old_data.total_read) / 2
+        processed_disk.sectors_read_speed = (data.sectors_read - old_data.sectors_read) / 2
+        processed_disk.time_waiting_read = (data.duration_not_read - old_data.duration_not_read) / 2
+        
+        processed_disk.write_speed = (data.total_write - old_data.total_write) / 2
+        processed_disk.sectors_write_speed = (data.sectors_write - old_data.sectors_write) / 2
+        processed_disk.time_waiting_write = (data.duration_not_write - old_data.duration_not_write) / 2
 
-    processed_disk.uncompleted_requests = data.in_flight
+        processed_disk.uncompleted_requests = data.in_flight
+        
+        pub_data.append(processed_disk)
 
     #print(processed_disk)
-    return processed_disk
+    #print(pub_data)
+    return pub_data
 
 class ProcessIOData:
 
