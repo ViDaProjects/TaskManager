@@ -3,6 +3,7 @@
 | `lo`      | Loopback | Local traffic only             |
 | `enp1s0`  | Ethernet | Likely disconnected            |
 | `wlo1`    | Wi-Fi    | Wireless network               |
+tem mais códigozinhos lol
 
 IGNORAR O O1, BUSCAR APENAS WL (wireless network) pq o número pode mudar dependendo de pci
 

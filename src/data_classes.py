@@ -1,6 +1,39 @@
 
 from dataclasses import dataclass
 
+class IO_DataBuffers:
+    def __init__(self):
+        self.IORawData = None
+        self.ShowIOData = None
+        self.file_data = None
+        self.file_path = "/"
+
+def set_io_raw(data):
+    io_data_buffers.IORawData = data
+
+def get_io_raw():
+    return io_data_buffers.IORawData
+
+def set_show_io_data(data):
+    io_data_buffers.ShowIOData = data
+
+def get_show_io_data():
+    return io_data_buffers.ShowIOData
+
+def set_file_data(data):
+    io_data_buffers.file_data = data
+
+def get_file_data():
+    return io_data_buffers.file_data
+
+def set_file_path(data):
+    io_data_buffers.file_path = data
+
+def get_file_path():
+    return io_data_buffers.file_path
+
+io_data_buffers = IO_DataBuffers()
+
 class DataBuffers:
 
     def __init__(self):
@@ -141,14 +174,106 @@ class ShowRamData:
     swap_percentage: float
 
 @dataclass
+class PartitionInfo:
+    name: str
+    mount_point: str
+    used: float
+    size: float
+
+@dataclass
 class DiskInfo:
+    model: str
+    vendor: str
+
+    partitions: list[PartitionInfo] # List contains (partition_name, filetype, partition_size, mount_location)
+
     total_read: float
     sectors_read: float
     duration_not_read: float
     total_write: float
-    total_write: float
+    sectors_write: float
     duration_not_write: float
     in_flight: float
+
+    used: float
+    total_size: float
+
+@dataclass
+class ShowPartitionInfo:
+    name: str
+    mount_point: str
+    used: float
+    size: float
+    used_percentage: float
+
+@dataclass 
+class ShowDiscInfo:
+    model: str
+    vendor: str
+
+    partitions: list[ShowPartitionInfo]
+    read_speed: float
+    sectors_read_speed: float
+    time_waiting_read: float
+    write_speed: float
+    sectors_write_speed: float
+    time_waiting_write: float
+    uncompleted_requests: float
+
+@dataclass 
+class InternetInfo:
+    name: str
+    # Blocks for in and out info
+    in_bytes: float
+    in_packets: float
+    in_errs: float
+    in_drop: float
+
+    out_bytes: float
+    out_packets: float
+    out_errs: float
+    out_drop: float
+
+@dataclass
+class ShowInternetInfo:
+    name: str
+    
+    in_speed: float
+    in_packet_speed: float
+    in_err_rate: float
+    in_drop_rate: float
+    in_avg_packet_size: float
+
+    out_speed: float
+    out_packet_speed: float
+    out_err_rate: float
+    out_drop_rate: float
+    out_avg_packet_size: float
+
+@dataclass
+class GatherDataPub: # As listas aqui podem mudar de tamanho a qualquer momento, CUIDADO
+    internet_info: list[InternetInfo]
+    disk_info: list[DiskInfo]
+
+@dataclass 
+class ShowIOData:
+    show_disc_info: list[ShowDiscInfo]
+    show_net_info: list[ShowInternetInfo]
+
+@dataclass
+class File:
+    name: str
+    permissions: str
+    size: float
+    block_count: float # Number of 512 bit blocks allocated for it
+    time_since_acess: float
+    time_since_modified: float
+    owner: str
+# name, permissions, size, block_count, time_since_access, time_since_modified, owner
+@dataclass
+class FileInfo:
+    files: list[File]
+    folders: list[File]
 
 buffer = DataBuffers()
 
