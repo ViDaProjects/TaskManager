@@ -20,7 +20,7 @@ from src.qthread_gatherer import ProcDataThread, MemDataThread, ShowMemDataThrea
 from gui.ProcessDialog import ProcessDialog
 import src.data_classes
 from src.data_classes import FileInfo, File
-from src.new_qthread import GatherIOThread, ProcessIOThread, FileInfoThread
+from src.new_qthread import GatherIOThread, ProcessIOThread, FileInfoThread, PIDInfoThread
 
 proc_thread = None
 ram_thread = None
@@ -33,31 +33,6 @@ CPU_USE_PAGE_INDEX = 2
 PARTITIONS_PAGE_INDEX = 3
 FILE_EXPLORER_PAGE_INDEX = 4
 USAGE_PER_PROCESS_PAGE_INDEX = 5
-
-root_files = FileInfo(
-    files=[
-        File("script.py", "-rwxr-xr-x", 1.5, 3, 120, 80, "viviane"),
-    ],
-    folders=[
-        File("Documentos", "drwxr-xr-x", 4096, 16, 300, 200, "viviane"),
-        File("Projetos", "drwx------", 8192, 24, 50, 30, "viviane"),
-    ]
-)
-
-doc_files = FileInfo(
-    files=[
-        File("relatorio.txt", "-rw-r--r--", 256.5, 4, 400, 350, "viviane")
-    ],
-    folders=[]
-)
-
-proj_files = FileInfo(
-    files=[
-        File("main.cpp", "-rw-r--r--", 150.0, 3, 180, 150, "viviane"),
-        File("foto.png", "-rw-------", 2048, 64, 90, 60, "viviane"),
-    ],
-    folders=[]
-)
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -224,11 +199,13 @@ class MainWindow(QMainWindow):
         gather_io_thread.stop()
         process_io_thread.stop()
         file_info_thread.stop()
+        pid_info_thread.stop()
 
         proc_thread.wait()
         ram_thread.wait()
         proc_processor_thread.wait()
         ram_processor_thread.wait()
+        pid_info_thread.wait()
 
         gather_io_thread.wait()
         process_io_thread.wait()
@@ -240,9 +217,11 @@ class MainWindow(QMainWindow):
 def main():
     global proc_thread, ram_thread, lock_PID, lock_pub_info, proc_processor_thread, ram_processor_thread
     global lock_file_path, lock_file_info, gather_io_thread, process_io_thread, file_info_thread, lock_gather_io, lock_pub_io
+    global lock_PID_info, pid_info_thread
 
     lock_gather_info = Lock()
     lock_PID = Lock()
+    lock_PID_info = Lock()
     lock_pub_info = Lock()
 
     lock_gather_io = Lock()
@@ -259,6 +238,7 @@ def main():
     process_io_thread = ProcessIOThread(lock_gather_io, lock_pub_io)
 
     file_info_thread = FileInfoThread(lock_sub_info=lock_file_path, lock_pub_info=lock_file_info)
+    pid_info_thread = PIDInfoThread(lock_PID, lock_PID_info)
 
     proc_thread.start()
     ram_thread.start()
@@ -268,6 +248,7 @@ def main():
     gather_io_thread.start()
     process_io_thread.start()
     file_info_thread.start()
+    pid_info_thread.start()
 
     time.sleep(0.5)
     app = QApplication(sys.argv)

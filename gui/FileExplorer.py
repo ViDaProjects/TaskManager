@@ -79,6 +79,6 @@ class FileExplorer(QWidget):
             f"Owner: {file.owner}<br>"
             f"Size: {file.size:.2f} KB<br>"
             f"Blocks: {file.block_count} (512 bits)<br>"
-            f"Last access: {file.time_since_acess:.1f} s atrás<br>"
-            f"Last modified: {file.time_since_modified:.1f} s atrás"
+            f"Last access: {file.time_since_acess:.1f} s<br>"
+            f"Last modified: {file.time_since_modified:.1f} s"
         )

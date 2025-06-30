@@ -7,6 +7,8 @@ class IO_DataBuffers:
         self.ShowIOData = None
         self.file_data = None
         self.file_path = "/"
+        self.pid_info = None
+        self.pid_num = 1
 
 def set_io_raw(data):
     io_data_buffers.IORawData = data
@@ -31,6 +33,18 @@ def set_file_path(data):
 
 def get_file_path():
     return io_data_buffers.file_path
+
+def set_pid_info(data):
+    io_data_buffers.pid_info = data
+
+def get_pid_info():
+    return io_data_buffers.pid_info
+
+def set_pid_num(data):
+    io_data_buffers.pid_num = data
+
+def get_pid_num():
+    return io_data_buffers.pid_num
 
 io_data_buffers = IO_DataBuffers()
 
@@ -274,5 +288,10 @@ class File:
 class FileInfo:
     files: list[File]
     folders: list[File]
+
+@dataclass
+class PIDInfo:
+    sockets: list[str]
+    files: list[str]
 
 buffer = DataBuffers()

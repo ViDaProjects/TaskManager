@@ -96,7 +96,7 @@ class DiskGather:
                 if part_name in mount_points:
                     partition_usage = file_reader.get_disk_usage(mount_points[part_name])
                     partition.append(mount_points[partition[0]])
-                    partition_data.append(data_classes.PartitionInfo(partition[0], partition[2], partition_usage, partition[1]))
+                    partition_data.append(data_classes.PartitionInfo(partition[0], partition[2], partition_usage / 1000 / 1000 / 1000, partition[1] / 1000 / 1000 / 1000))
                 else:
                     # A partição não está montada — pode registrar como "não montada", ignorar, etc.
                     continue

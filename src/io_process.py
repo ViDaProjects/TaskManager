@@ -21,7 +21,7 @@ def process_disk(data: list[data_classes.DiskInfo], old_data: list[data_classes.
         processed_disk.partitions = []
 
         for partition in data.partitions:
-            processed_disk.partitions.append(data_classes.ShowPartitionInfo(partition.name, partition.mount_point, partition.used, partition.size, partition.used / partition.size))
+            processed_disk.partitions.append(data_classes.ShowPartitionInfo(partition.name, partition.mount_point, partition.used, partition.size, 100 * partition.used / partition.size))
 
         processed_disk.read_speed = (data.total_read - old_data.total_read) / 2
         processed_disk.sectors_read_speed = (data.sectors_read - old_data.sectors_read) / 2

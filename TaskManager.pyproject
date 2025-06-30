@@ -13,7 +13,6 @@
         "src/process_data.py",
         "src/qthread_gatherer.py",
         "gui/ProcessDialog.py",
-        "gui/ui_process_dialog.py",
         "gui/PartitionGraph.py",
         "src/disk_info.py",
         "src/file_explorer.py",
@@ -26,7 +25,9 @@
         "src/net_reminder.md",
         "src/new_qthread.py",
         "src/ORGANIZAÇÃO.MD",
-        "src/test.py",
-        "gui/FileExplorer.py"
+        "gui/FileExplorer.py",
+        "src/pid_info.py",
+        "src/pid_io_data.py",
+        "gui/process_usage_diag.ui"
     ]
 }
