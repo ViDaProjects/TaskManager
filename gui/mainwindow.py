@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
         self.show_io_data = None
         self.current_file_path = "/"
         self.current_file_info = None
+        self.pid_info = None
 
         #process page
         self.ui.process_table.setColumnCount(len(fields(ShowProcessData)))
@@ -105,7 +106,7 @@ class MainWindow(QMainWindow):
                 src.data_classes.set_PID(process.pid) #Get current PID value
 
             time.sleep(0.5) #Time to wait data
-            self.dialog = ProcessDialog(self.show_process_list[self.dialog_row], self.proc_ram_data, self)
+            self.dialog = ProcessDialog(self.show_process_list[self.dialog_row], self.proc_ram_data, self.pid_info)
             self.dialog.finished.connect(lambda _: setattr(self, "dialog", None))
             self.dialog.exec()
 
@@ -143,6 +144,9 @@ class MainWindow(QMainWindow):
             self.current_file_info = copy.deepcopy(src.data_classes.get_file_data())
             self.current_file_path = copy.deepcopy(src.data_classes.get_file_path())
 
+        with lock_PID_info:
+            self.pid_info = copy.deepcopy(src.data_classes.get_pid_info())
+
         if not isinstance(self.all_system_data, ShowSystemData):
             print("System data is not valid")
             (self.all_system_data)
@@ -167,7 +171,7 @@ class MainWindow(QMainWindow):
 
         #Update dialog, if its open
         if self.dialog is not None and (self.dialog_row <= len(self.show_process_list)):
-            self.dialog.update_data(self.show_process_list[self.dialog_row], self.proc_ram_data)
+            self.dialog.update_data(self.show_process_list[self.dialog_row], self.proc_ram_data, self.pid_info)
 
     def on_item_expanded(self, item: QTreeWidgetItem):
         folder_path = item.data(0, Qt.UserRole)
