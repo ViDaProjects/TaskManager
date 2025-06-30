@@ -90,10 +90,16 @@ class DiskGather:
             # Shennagigans to allow adding the mounting points to the tuple
 
             partition_data = []
+
             for partition in partitions:
-                partition_usage = file_reader.get_disk_usage(mount_points[partition[0]])
-                partition.append(mount_points[partition[0]])
-                partition_data.append(data_classes.PartitionInfo(partition[0], partition[2], partition_usage, partition[1]))
+                part_name = partition[0]
+                if part_name in mount_points:
+                    partition_usage = file_reader.get_disk_usage(mount_points[part_name])
+                    partition.append(mount_points[partition[0]])
+                    partition_data.append(data_classes.PartitionInfo(partition[0], partition[2], partition_usage / 1000 / 1000 / 1000, partition[1] / 1000 / 1000 / 1000))
+                else:
+                    # A partição não está montada — pode registrar como "não montada", ignorar, etc.
+                    continue
 
             disk_data.partitions = partition_data.copy()
             data.append(disk_data)

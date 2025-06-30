@@ -1,3 +1,0 @@
-
-
-print(mount_map)

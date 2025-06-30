@@ -15,7 +15,7 @@ class PublisherFileData:
             self.path = copy.deepcopy(data_classes.get_file_path())
 
         file_info = file_explorer.get_dir_info(self.path)
-        print(file_info)
+        #print(file_info)
         with self.pub_info_lock:
             data_classes.set_file_data(copy.deepcopy(file_info))
 

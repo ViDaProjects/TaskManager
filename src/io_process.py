@@ -6,9 +6,13 @@ def process_disk(data: list[data_classes.DiskInfo], old_data: list[data_classes.
     if len(data) != len(old_data):
         return
     pub_data = []
-    for i in range(len(data)):
-        data = data[i]
-        old_data = old_data[i]
+
+    loop_data = data
+    old_loop_data = old_data
+
+    for i in range(len(loop_data)):
+        data = loop_data[i]
+        old_data = old_loop_data[i]
 
         processed_disk = data_classes.ShowDiscInfo(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         processed_disk.model = data.model
@@ -17,7 +21,7 @@ def process_disk(data: list[data_classes.DiskInfo], old_data: list[data_classes.
         processed_disk.partitions = []
 
         for partition in data.partitions:
-            processed_disk.partitions.append(data_classes.ShowPartitionInfo(partition.name, partition.mount_point, partition.used, partition.size, partition.used / partition.size))
+            processed_disk.partitions.append(data_classes.ShowPartitionInfo(partition.name, partition.mount_point, partition.used, partition.size, 100 * partition.used / partition.size))
 
         processed_disk.read_speed = (data.total_read - old_data.total_read) / 2
         processed_disk.sectors_read_speed = (data.sectors_read - old_data.sectors_read) / 2
