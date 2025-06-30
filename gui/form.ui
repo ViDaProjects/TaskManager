@@ -195,17 +195,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="usage_per_process_button">
-            <property name="text">
-             <string>Usage per process</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/sliders.svg</normaloff>icons/sliders.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Orientation::Vertical</enum>

@@ -133,14 +133,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.file_explorer_button)
 
-        self.usage_per_process_button = QPushButton(self.menu_options_frame)
-        self.usage_per_process_button.setObjectName(u"usage_per_process_button")
-        icon5 = QIcon()
-        icon5.addFile(u"icons/sliders.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.usage_per_process_button.setIcon(icon5)
-
-        self.verticalLayout_2.addWidget(self.usage_per_process_button)
-
         self.verticalSpacer = QSpacerItem(20, 349, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_2.addItem(self.verticalSpacer)
@@ -174,9 +166,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setContentsMargins(0, -1, 0, -1)
         self.pushButton_4 = QPushButton(self.frame_8)
         self.pushButton_4.setObjectName(u"pushButton_4")
-        icon6 = QIcon()
-        icon6.addFile(u"icons/menu.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.pushButton_4.setIcon(icon6)
+        icon5 = QIcon()
+        icon5.addFile(u"icons/menu.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.pushButton_4.setIcon(icon5)
         self.pushButton_4.setIconSize(QSize(20, 20))
         self.pushButton_4.setFlat(True)
 
@@ -584,7 +576,6 @@ class Ui_MainWindow(object):
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"File System", None))
         self.partitions_button.setText(QCoreApplication.translate("MainWindow", u"Partitions", None))
         self.file_explorer_button.setText(QCoreApplication.translate("MainWindow", u"File explorer", None))
-        self.usage_per_process_button.setText(QCoreApplication.translate("MainWindow", u"Usage per process", None))
         self.pushButton_4.setText("")
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Menu", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"DASHBOARD", None))

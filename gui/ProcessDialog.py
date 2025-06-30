@@ -23,6 +23,11 @@ class ProcessDialog(QDialog):
         self.ui.ram_graph_frame.setLayout(self.graph_layout)
         self.graph_layout.addWidget(self.ram_graph)
 
+        self.sockets_count = 0
+        self.files_count = 0
+        self.sockets = []
+        self.files = []
+
         self.update_data(process, proc_ram, data)
 
 
@@ -50,16 +55,21 @@ class ProcessDialog(QDialog):
             print("Invalid PID socket and IO data. Could not use it")
             return
 
-        count = 0
         for socket in data.sockets:
-            if count > 15:
+            if self.sockets_count > 5 or self.files_count > 5:
                 break
-            label = QLabel()
-            label.setText(socket)
-            self.ui.sockets_frame.layout().addWidget(label)
+            if socket not in self.sockets:
+                label = QLabel()
+                label.setText(socket)
+                self.ui.sockets_frame.layout().addWidget(label)
+                self.sockets_count +=1
 
         for file in data.files:
-            label = QLabel()
-            label.setText(file)
-            label.setAlignment(Qt.AlignRight)
-            self.ui.files_frame.layout().addWidget(label)
+            if self.sockets_count > 5 or self.files_count > 5:
+                break
+            if file not in self.files:
+                label = QLabel()
+                label.setText(file)
+                label.setAlignment(Qt.AlignRight)
+                self.ui.files_frame.layout().addWidget(label)
+                self.files_count += 1

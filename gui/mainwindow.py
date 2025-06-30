@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         self.ui.memory_usage_button.clicked.connect(lambda: self.change_current_stack_page(MEMORY_USE_PAGE_INDEX))
         self.ui.partitions_button.clicked.connect(lambda: self.change_current_stack_page(PARTITIONS_PAGE_INDEX))
         self.ui.file_explorer_button.clicked.connect(lambda: self.change_current_stack_page(FILE_EXPLORER_PAGE_INDEX))
-        self.ui.usage_per_process_button.clicked.connect(lambda: self.change_current_stack_page(USAGE_PER_PROCESS_PAGE_INDEX))
+        #self.ui.usage_per_process_button.clicked.connect(lambda: self.change_current_stack_page(USAGE_PER_PROCESS_PAGE_INDEX))
         self.ui.process_table.cellDoubleClicked.connect(self.open_process_info)
 
         self.file_explorer.tree.itemExpanded.connect(self.on_item_expanded)
@@ -104,6 +104,7 @@ class MainWindow(QMainWindow):
             self.dialog_row = row
             with lock_PID:
                 src.data_classes.set_PID(process.pid) #Get current PID value
+                src.data_classes.set_pid_num(process.pid)
 
             time.sleep(0.5) #Time to wait data
             self.dialog = ProcessDialog(self.show_process_list[self.dialog_row], self.proc_ram_data, self.pid_info)

@@ -214,11 +214,6 @@ class Ui_Dialog(object):
         self.sockets_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_6 = QVBoxLayout(self.sockets_frame)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.label_10 = QLabel(self.sockets_frame)
-        self.label_10.setObjectName(u"label_10")
-
-        self.verticalLayout_6.addWidget(self.label_10)
-
 
         self.verticalLayout_4.addWidget(self.sockets_frame)
 
@@ -250,11 +245,6 @@ class Ui_Dialog(object):
         self.files_frame.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_7 = QVBoxLayout(self.files_frame)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.label_12 = QLabel(self.files_frame)
-        self.label_12.setObjectName(u"label_12")
-
-        self.verticalLayout_7.addWidget(self.label_12, 0, Qt.AlignmentFlag.AlignRight)
-
 
         self.verticalLayout_5.addWidget(self.files_frame)
 
@@ -308,8 +298,6 @@ class Ui_Dialog(object):
         self.label_7.setText(QCoreApplication.translate("Dialog", u"Swap (%):", None))
         self.swap_label.setText(QCoreApplication.translate("Dialog", u"0", None))
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Sockets:", None))
-        self.label_10.setText(QCoreApplication.translate("Dialog", u"TextLabel", None))
         self.label_6.setText(QCoreApplication.translate("Dialog", u"I/O Devices:", None))
-        self.label_12.setText(QCoreApplication.translate("Dialog", u"TextLabel", None))
     # retranslateUi
 
