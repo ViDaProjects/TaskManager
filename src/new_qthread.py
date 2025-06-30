@@ -38,6 +38,7 @@ class ProcessIOThread(QThread):
 
     def run(self):
         while self._running:
+            self.sleep(0.1)
             self.file_processor.gather_file_data()
             
             # Guarantees it publishes everything
