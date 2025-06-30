@@ -3,10 +3,10 @@ import sys
 import time
 import copy
 from dataclasses import fields
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView, QAbstractItemView
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QTreeWidgetItem, QHeaderView, QAbstractItemView
 from PySide6.QtCore import QTimer
 from threading import Lock
-
+from PySide6.QtCore import Qt
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
@@ -15,10 +15,12 @@ from gui.ui_form import Ui_MainWindow
 from src.data_classes import ShowProcessData, ShowSystemData
 from gui.graph_page import GraphPage
 from gui.PartitionGraph import PartitionGraph
+from gui.FileExplorer import FileExplorer
 from src.qthread_gatherer import ProcDataThread, MemDataThread, ShowMemDataThread, ShowProcDataThread
 from gui.ProcessDialog import ProcessDialog
 import src.data_classes
-from src.data_classes import ShowDiscInfo, ShowIOData, ShowPartitionInfo
+from src.data_classes import FileInfo, File
+from src.new_qthread import GatherIOThread, ProcessIOThread, FileInfoThread
 
 proc_thread = None
 ram_thread = None
@@ -32,56 +34,29 @@ PARTITIONS_PAGE_INDEX = 3
 FILE_EXPLORER_PAGE_INDEX = 4
 USAGE_PER_PROCESS_PAGE_INDEX = 5
 
-io_data_exemplo = ShowIOData(
-    show_disc_info=[
-        ShowDiscInfo(
-            model="Samsung SSD 870 EVO",
-            vendor="Samsung",
-            partitions=[
-                ShowPartitionInfo(
-                    name="/dev/sda1",
-                    mount_point="/",
-                    used=20480,
-                    size=51200,
-                    used_percentage=40.0
-                ),
-                ShowPartitionInfo(
-                    name="/dev/sda2",
-                    mount_point="/home",
-                    used=10240,
-                    size=25600,
-                    used_percentage=40.0
-                ),
-            ],
-            read_speed=150.0,
-            sectors_read_speed=3000.0,
-            time_waiting_read=0.5,
-            write_speed=120.0,
-            sectors_write_speed=2500.0,
-            time_waiting_write=0.4,
-            uncompleted_requests=2.0
-        ),
-        ShowDiscInfo(
-            model="WD Blue 1TB",
-            vendor="Western Digital",
-            partitions=[
-                ShowPartitionInfo(
-                    name="/dev/sdb1",
-                    mount_point="/media/data",
-                    used=500000,
-                    size=1000000,
-                    used_percentage=50.0
-                ),
-            ],
-            read_speed=100.0,
-            sectors_read_speed=2000.0,
-            time_waiting_read=1.2,
-            write_speed=80.0,
-            sectors_write_speed=1800.0,
-            time_waiting_write=1.0,
-            uncompleted_requests=0.0
-        )
+root_files = FileInfo(
+    files=[
+        File("script.py", "-rwxr-xr-x", 1.5, 3, 120, 80, "viviane"),
+    ],
+    folders=[
+        File("Documentos", "drwxr-xr-x", 4096, 16, 300, 200, "viviane"),
+        File("Projetos", "drwx------", 8192, 24, 50, 30, "viviane"),
     ]
+)
+
+doc_files = FileInfo(
+    files=[
+        File("relatorio.txt", "-rw-r--r--", 256.5, 4, 400, 350, "viviane")
+    ],
+    folders=[]
+)
+
+proj_files = FileInfo(
+    files=[
+        File("main.cpp", "-rw-r--r--", 150.0, 3, 180, 150, "viviane"),
+        File("foto.png", "-rw-------", 2048, 64, 90, 60, "viviane"),
+    ],
+    folders=[]
 )
 
 class MainWindow(QMainWindow):
@@ -97,6 +72,9 @@ class MainWindow(QMainWindow):
         self.show_process_list = []
         self.all_system_data = None
         self.proc_ram_data = None
+        self.show_io_data = None
+        self.current_file_path = "/"
+        self.current_file_info = None
 
         #process page
         self.ui.process_table.setColumnCount(len(fields(ShowProcessData)))
@@ -122,11 +100,15 @@ class MainWindow(QMainWindow):
         #self.ui.partitions_frame.setLayout(QVBoxLayout())
         self.ui.partitions_frame.layout().addWidget(self.partition_graph)
 
+        #File explorer page
+        self.file_explorer = FileExplorer()
+        self.ui.file_explorer_frame.layout().addWidget(self.file_explorer)
+
         #Timer
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_stack_pages)
         self.update_stack_pages()
-        self.timer.start(2000) #3 seconds
+        self.timer.start(1000)
 
         #Connects signals
         self.ui.processes_button.clicked.connect(lambda: self.change_current_stack_page(PROCESSES_PAGE_INDEX))
@@ -136,6 +118,8 @@ class MainWindow(QMainWindow):
         self.ui.file_explorer_button.clicked.connect(lambda: self.change_current_stack_page(FILE_EXPLORER_PAGE_INDEX))
         self.ui.usage_per_process_button.clicked.connect(lambda: self.change_current_stack_page(USAGE_PER_PROCESS_PAGE_INDEX))
         self.ui.process_table.cellDoubleClicked.connect(self.open_process_info)
+
+        self.file_explorer.tree.itemExpanded.connect(self.on_item_expanded)
 
 #Mudar a lógica pra não alterar os dados do dialog quando a pag atualiza
     def open_process_info(self, row):
@@ -177,9 +161,16 @@ class MainWindow(QMainWindow):
             self.all_system_data = copy.deepcopy(src.data_classes.get_SHOW_SYSTEM_DATA())
             self.proc_ram_data = copy.deepcopy(src.data_classes.get_SHOW_RAM_DATA())
 
+        with lock_pub_io:
+            self.show_io_data = copy.deepcopy(src.data_classes.get_show_io_data())
+
+        with lock_file_info:
+            self.current_file_info = copy.deepcopy(src.data_classes.get_file_data())
+            self.current_file_path = copy.deepcopy(src.data_classes.get_file_path())
+
         if not isinstance(self.all_system_data, ShowSystemData):
             print("System data is not valid")
-            print(self.all_system_data)
+            (self.all_system_data)
             return
 
         #Update labels
@@ -191,7 +182,10 @@ class MainWindow(QMainWindow):
         #Update graphs
         self.cpu_graph.update_graph([self.all_system_data.cpu_usage])
         self.memory_graph.update_graph([self.all_system_data.mem_used_percent, self.all_system_data.swap_used_percent])
-        self.partition_graph.update_graph(io_data_exemplo.show_disc_info)
+        self.partition_graph.update_graph(self.show_io_data.show_disc_info)
+
+        #Update file explorer
+        self.file_explorer.update_tree(self.current_file_path, self.current_file_info)
 
         #Update processes table
         self.fill_process_table(self.all_system_data.process)
@@ -199,6 +193,24 @@ class MainWindow(QMainWindow):
         #Update dialog, if its open
         if self.dialog is not None and (self.dialog_row <= len(self.show_process_list)):
             self.dialog.update_data(self.show_process_list[self.dialog_row], self.proc_ram_data)
+
+    def on_item_expanded(self, item: QTreeWidgetItem):
+        folder_path = item.data(0, Qt.UserRole)
+        print(folder_path)
+
+        if not folder_path:
+            return
+
+        with lock_file_path:
+            path = copy.deepcopy(folder_path)
+            src.data_classes.set_file_path(path)
+
+        #Avoid populate node if already has child
+        #if item.childCount() > 0:
+        #    return
+
+        time.sleep(1)
+        self.file_explorer.open_files_from_expanded_folder(item, folder_path)
 
     def closeEvent(self, event):
         global proc_thread, ram_thread, proc_processor_thread, ram_processor_thread
@@ -209,30 +221,53 @@ class MainWindow(QMainWindow):
         proc_processor_thread.stop()
         ram_processor_thread.stop()
 
+        gather_io_thread.stop()
+        process_io_thread.stop()
+        file_info_thread.stop()
+
         proc_thread.wait()
         ram_thread.wait()
         proc_processor_thread.wait()
         ram_processor_thread.wait()
+
+        gather_io_thread.wait()
+        process_io_thread.wait()
+        file_info_thread.wait()
 
         super().closeEvent(event)
 
 
 def main():
     global proc_thread, ram_thread, lock_PID, lock_pub_info, proc_processor_thread, ram_processor_thread
+    global lock_file_path, lock_file_info, gather_io_thread, process_io_thread, file_info_thread, lock_gather_io, lock_pub_io
 
     lock_gather_info = Lock()
     lock_PID = Lock()
     lock_pub_info = Lock()
+
+    lock_gather_io = Lock()
+    lock_pub_io = Lock()
+    lock_file_path = Lock()
+    lock_file_info = Lock()
 
     proc_thread = ProcDataThread(lock_gather_info, lock_PID)
     ram_thread = MemDataThread(lock_gather_info, lock_PID)
     proc_processor_thread = ShowProcDataThread(lock_gather_info, lock_pub_info)
     ram_processor_thread = ShowMemDataThread(lock_gather_info, lock_pub_info)
 
+    gather_io_thread = GatherIOThread(lock_gather_io)
+    process_io_thread = ProcessIOThread(lock_gather_io, lock_pub_io)
+
+    file_info_thread = FileInfoThread(lock_sub_info=lock_file_path, lock_pub_info=lock_file_info)
+
     proc_thread.start()
     ram_thread.start()
     proc_processor_thread.start()
     ram_processor_thread.start()
+
+    gather_io_thread.start()
+    process_io_thread.start()
+    file_info_thread.start()
 
     time.sleep(0.5)
     app = QApplication(sys.argv)

@@ -483,10 +483,11 @@ class Ui_MainWindow(object):
 
         self.frame_14 = QFrame(self.file_explorer_page)
         self.frame_14.setObjectName(u"frame_14")
-        self.frame_14.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_14.setFrameShape(QFrame.Shape.NoFrame)
         self.frame_14.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_17 = QVBoxLayout(self.frame_14)
         self.verticalLayout_17.setObjectName(u"verticalLayout_17")
+        self.verticalLayout_17.setContentsMargins(0, 0, 0, 0)
         self.file_explorer_frame = QFrame(self.frame_14)
         self.file_explorer_frame.setObjectName(u"file_explorer_frame")
         self.file_explorer_frame.setFrameShape(QFrame.Shape.NoFrame)
@@ -494,11 +495,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_22 = QVBoxLayout(self.file_explorer_frame)
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.verticalLayout_22.setContentsMargins(0, 0, 0, 0)
-        self.label_18 = QLabel(self.file_explorer_frame)
-        self.label_18.setObjectName(u"label_18")
-
-        self.verticalLayout_22.addWidget(self.label_18)
-
 
         self.verticalLayout_17.addWidget(self.file_explorer_frame)
 
@@ -509,7 +505,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_23 = QVBoxLayout(self.file_spacer_frame)
         self.verticalLayout_23.setObjectName(u"verticalLayout_23")
         self.verticalLayout_23.setContentsMargins(0, 0, 0, 0)
-        self.verticalSpacer_3 = QSpacerItem(20, 405, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_23.addItem(self.verticalSpacer_3)
 
@@ -604,8 +600,7 @@ class Ui_MainWindow(object):
         self.total_swap_label.setText(QCoreApplication.translate("MainWindow", u"0/0 MB", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"CPU usage", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Partitions", None))
-        self.label_15.setText(QCoreApplication.translate("MainWindow", u"File manager", None))
-        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Marca\u00e7\u00e3o", None))
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"File explorer", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Usage per process", None))
     # retranslateUi
 

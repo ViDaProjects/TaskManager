@@ -1,10 +1,10 @@
 from PySide6.QtCore import QThread
-from io_gatherer import PublisherIOData
-from io_process import ProcessIOData
+from src.io_gatherer import PublisherIOData
+from src.io_process import ProcessIOData
 import time
 from threading import Lock
-from file_gather import PublisherFileData
-import data_classes
+from src.file_gather import PublisherFileData
+import src.data_classes as data_classes
 
 class GatherIOThread(QThread):
     def __init__(self, lock_gather_info):
@@ -40,8 +40,8 @@ class ProcessIOThread(QThread):
             self.file_processor.gather_file_data()
             
             # Guarantees it publishes everything
-            with self.lock_pub_info:
-                print(data_classes.get_file_data())
+            #with self.lock_pub_info:
+            #    print(data_classes.get_file_data())
 
     def stop(self):
         self._running = False

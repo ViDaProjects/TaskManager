@@ -822,7 +822,7 @@
                  <item alignment="Qt::AlignmentFlag::AlignHCenter">
                   <widget class="QLabel" name="label_15">
                    <property name="text">
-                    <string>File manager</string>
+                    <string>File explorer</string>
                    </property>
                   </widget>
                  </item>
@@ -832,12 +832,24 @@
               <item>
                <widget class="QFrame" name="frame_14">
                 <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Shadow::Raised</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_17">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
                  <item>
                   <widget class="QFrame" name="file_explorer_frame">
                    <property name="frameShape">
@@ -859,13 +871,6 @@
                     <property name="bottomMargin">
                      <number>0</number>
                     </property>
-                    <item>
-                     <widget class="QLabel" name="label_18">
-                      <property name="text">
-                       <string>Marcação</string>
-                      </property>
-                     </widget>
-                    </item>
                    </layout>
                   </widget>
                  </item>
@@ -898,7 +903,7 @@
                       <property name="sizeHint" stdset="0">
                        <size>
                         <width>20</width>
-                        <height>405</height>
+                        <height>40</height>
                        </size>
                       </property>
                      </spacer>

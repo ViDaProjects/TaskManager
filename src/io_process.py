@@ -1,4 +1,4 @@
-import data_classes
+import src.data_classes as data_classes
 import copy
 import time
 
@@ -6,9 +6,13 @@ def process_disk(data: list[data_classes.DiskInfo], old_data: list[data_classes.
     if len(data) != len(old_data):
         return
     pub_data = []
-    for i in range(len(data)):
-        data = data[i]
-        old_data = old_data[i]
+
+    loop_data = data
+    old_loop_data = old_data
+
+    for i in range(len(loop_data)):
+        data = loop_data[i]
+        old_data = old_loop_data[i]
 
         processed_disk = data_classes.ShowDiscInfo(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         processed_disk.model = data.model
@@ -92,4 +96,5 @@ class ProcessIOData:
         #print(processed_io)
         with self.pub_info_lock:
             data_classes.set_show_io_data(copy.deepcopy(processed_io))
+
 

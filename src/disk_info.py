@@ -1,6 +1,6 @@
 import os
-import file_reader
-import data_classes
+import src.file_reader as file_reader
+import src.data_classes as data_classes
 
 def get_partition_size_bytes(disk, part):
     path = f"/sys/block/{disk}/{part}/size"
@@ -70,7 +70,7 @@ class DiskGather:
                         vendor = f.read().strip()
                 except FileNotFoundError:
                     pass
-            
+
             disk_data.model = model
             disk_data.vendor = vendor
 
@@ -84,20 +84,26 @@ class DiskGather:
             for i in range(len(partitions)):
                 partitions[i].append(get_partition_size_bytes(disk, partitions[i][0]))
 
-            
+
             mount_points = file_reader.read_disk_mount_point()
-            
+
             # Shennagigans to allow adding the mounting points to the tuple
 
             partition_data = []
+
             for partition in partitions:
-                partition_usage = file_reader.get_disk_usage(mount_points[partition[0]])
-                partition.append(mount_points[partition[0]])
-                partition_data.append(data_classes.PartitionInfo(partition[0], partition[2], partition_usage, partition[1]))
+                part_name = partition[0]
+                if part_name in mount_points:
+                    partition_usage = file_reader.get_disk_usage(mount_points[part_name])
+                    partition.append(mount_points[partition[0]])
+                    partition_data.append(data_classes.PartitionInfo(partition[0], partition[2], partition_usage, partition[1]))
+                else:
+                    # A partição não está montada — pode registrar como "não montada", ignorar, etc.
+                    continue
 
             disk_data.partitions = partition_data.copy()
             data.append(disk_data)
-        
+
         # Trocar esse return para colocar em um buffer de thread
         return data
 
@@ -105,4 +111,3 @@ if __name__ == "__main__":
     a = DiskGather()
     data = a.get_disk_info()
     print(data)
-    

@@ -23,5 +23,6 @@ Run this command before run project if form.ui was updated
 On terminal, use 
 
         python3 -m gui.mainwindow
+	sudo env "PATH=$PATH" python3 -m gui.mainwindow
 	
 

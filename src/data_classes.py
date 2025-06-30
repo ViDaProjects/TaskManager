@@ -49,28 +49,28 @@ class DataBuffers:
 
     def GATHERED_set(self, data):
         self.GATHERED_DATA = data
-    
+
     def GATHERED_get(self):
         return self.GATHERED_DATA
-    
+
     def RAM_INFO_set(self, data):
         self.RAM_INFO = data
-    
+
     def RAM_INFO_get(self):
         return self.RAM_INFO
 
     def PID_set(self, data):
         self.PID = data
-    
+
     def PID_get(self):
         return self.PID
-    
+
     def SHOW_SYSTEM_DATA_set(self, data):
         self.SHOW_SYSTEM_DATA = data
-    
+
     def SHOW_SYSTEM_DATA_get(self):
         return self.SHOW_SYSTEM_DATA
-    
+
     def SHOW_RAM_DATA_set(self, data):
         self.SHOW_RAM_DATA = data
 
@@ -120,7 +120,7 @@ class ProcessData:
 @dataclass
 class SystemData:
     cpu_runtime: float
-    cpu_active_time: float 
+    cpu_active_time: float
     mem_total: float
     mem_unused: float
     mem_available: float
@@ -153,7 +153,7 @@ class ShowProcessData:
 
 @dataclass
 class ShowSystemData:
-    cpu_usage: float 
+    cpu_usage: float
     mem_total: float
     mem_used: float
     mem_used_percent: float
@@ -206,7 +206,7 @@ class ShowPartitionInfo:
     size: float
     used_percentage: float
 
-@dataclass 
+@dataclass
 class ShowDiscInfo:
     model: str
     vendor: str
@@ -220,7 +220,7 @@ class ShowDiscInfo:
     time_waiting_write: float
     uncompleted_requests: float
 
-@dataclass 
+@dataclass
 class InternetInfo:
     name: str
     # Blocks for in and out info
@@ -237,7 +237,7 @@ class InternetInfo:
 @dataclass
 class ShowInternetInfo:
     name: str
-    
+
     in_speed: float
     in_packet_speed: float
     in_err_rate: float
@@ -255,7 +255,7 @@ class GatherDataPub: # As listas aqui podem mudar de tamanho a qualquer momento,
     internet_info: list[InternetInfo]
     disk_info: list[DiskInfo]
 
-@dataclass 
+@dataclass
 class ShowIOData:
     show_disc_info: list[ShowDiscInfo]
     show_net_info: list[ShowInternetInfo]
@@ -276,28 +276,3 @@ class FileInfo:
     folders: list[File]
 
 buffer = DataBuffers()
-
-@dataclass
-class ShowPartitionInfo:
-    name: str
-    mount_point: str
-    used: float
-    size: float
-    used_percentage: float
-
-@dataclass
-class ShowDiscInfo:
-    model: str
-    vendor: str
-    partitions: list[ShowPartitionInfo]
-    read_speed: float
-    sectors_read_speed: float
-    time_waiting_read: float
-    write_speed: float
-    sectors_write_speed: float
-    time_waiting_write: float
-    uncompleted_requests: float
-
-@dataclass
-class ShowIOData:
-    show_disc_info: list[ShowDiscInfo] #A lista pode vir None quando um pen drive é desconectado, por exemplo

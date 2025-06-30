@@ -1,11 +1,11 @@
 import os
 import re
 import time
-import file_reader
-import data_classes
+import src.file_reader as file_reader
+import src.data_classes as data_classes
 import copy
-from disk_info import DiskGather
-from internet_info import NetGather
+from src.disk_info import DiskGather
+from src.internet_info import NetGather
 
 IO_DIR = "ioports"
 SYS_CLASS_INPUT_DIR = "/sys/class/input"
@@ -44,8 +44,8 @@ class IOMiner:
             line = line.strip()
             ports.append(line[0:9])
             names.append(line[12:])
-            print(line[0:9], end=" ")
-            print(line[12:])
+            #print(line[0:9], end=" ")
+            #print(line[12:])
 
         return ports, names
     

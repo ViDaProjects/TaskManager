@@ -15,6 +15,18 @@
         "gui/ProcessDialog.py",
         "gui/ui_process_dialog.py",
         "gui/PartitionGraph.py",
-        "gui/file_explorer_test.py"
+        "src/disk_info.py",
+        "src/file_explorer.py",
+        "src/file_gather.py",
+        "src/file_reader.py",
+        "src/gatherers.md",
+        "src/internet_info.py",
+        "src/io_gatherer.py",
+        "src/io_process.py",
+        "src/net_reminder.md",
+        "src/new_qthread.py",
+        "src/ORGANIZAÇÃO.MD",
+        "src/test.py",
+        "gui/FileExplorer.py"
     ]
 }

@@ -57,7 +57,7 @@ class DataMiner:
         if not statm:
             with self.lock_gather_info:
                 data_classes.set_RAM_INFO(None)
-            print("Ram data not gathered, process killed or permission denied")
+            #print("Ram data not gathered, process killed or permission denied")
             return
         
         ram_granular_data = self.get_numbers_list(statm[0])

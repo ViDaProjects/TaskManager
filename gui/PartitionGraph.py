@@ -76,7 +76,7 @@ class PartitionGraph(QWidget):
         label = QLabel()
         label.setAlignment(Qt.AlignCenter)
         label.setText(
-            f"<b>{part.name}</b><br>{part.used:.0f} MB / {part.size:.0f} MB<br>{part.used_percentage:.1f}% used"
+            f"<b>{part.name}</b><br>{part.used:.0f} GB / {part.size:.0f} GB<br>{part.used_percentage:.1f}% used"
         )
         label.setStyleSheet("color: black; font-weight: bold;")
         layout.addWidget(label)

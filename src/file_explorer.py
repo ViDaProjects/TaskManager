@@ -6,7 +6,7 @@ import ctypes.util
 import time
 import stat
 
-import data_classes
+import src.data_classes as data_classes
 
 # Load libc
 libc = ctypes.CDLL(ctypes.util.find_library("c"))
@@ -68,7 +68,7 @@ def get_dir_info(path):
         return
     
     if path[-1] != "/":
-        path.append("/")
+        path += "/"
 
     for dir in dirs:
         statbuf = StatStruct()

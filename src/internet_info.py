@@ -1,7 +1,7 @@
 
 import os
-import file_reader
-import data_classes
+import src.file_reader as file_reader
+import src.data_classes as data_classes
 
 class NetGather:
 
