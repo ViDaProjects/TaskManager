@@ -66,13 +66,11 @@ def get_dir_info(path):
         dirs = os.listdir(path)
     except:
         return
-    
-    if path[-1] != "/":
-        path += "/"
-
     for dir in dirs:
+        full_path = os.path.join(path, dir)
+
         statbuf = StatStruct()
-        ret = libc.stat(path + dir, ctypes.byref(statbuf))
+        ret = libc.stat(full_path.encode('utf-8'), ctypes.byref(statbuf))
 
         if ret == 0:
             name = dir
@@ -84,7 +82,7 @@ def get_dir_info(path):
             owner = get_username_from_uid(statbuf.st_uid)
             pub_data = data_classes.File(name, permissions, size, block_count, time_since_access, time_since_modified, owner)
             try:
-                os.listdir(path + dir)
+                os.listdir(full_path)
                 files.append(pub_data)
             except:
                 folders.append(pub_data)

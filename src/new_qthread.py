@@ -38,6 +38,7 @@ class ProcessIOThread(QThread):
 
     def run(self):
         while self._running:
+            self.sleep(0.1)
             self.file_processor.gather_file_data()
             
             # Guarantees it publishes everything
@@ -58,6 +59,7 @@ class FileInfoThread(QThread):
 
     def run(self):
         while self._running:
+            time.sleep(0.1)
             self.io_processor.process_io_data()
 
     def stop(self):
@@ -74,6 +76,7 @@ class PIDInfoThread(QThread):
 
     def run(self):
         while self._running:
+            time.sleep(0.1)
             self.pid_processor.get_pid_info()
             #with self.lock_pid_info:
             #    print(data_classes.get_pid_info())
